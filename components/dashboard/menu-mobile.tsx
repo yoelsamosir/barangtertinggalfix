@@ -28,7 +28,7 @@ export function MenuMobile({ judul, children }: { judul: string; children: React
   }, [terbuka]);
 
   return (
-    <div className="lg:hidden">
+    <div className="lg:hidden print:hidden">
       <header className="sticky top-0 z-30 flex items-center gap-3 border-b-4 border-aksen bg-permukaan px-4 py-2">
         <button
           type="button"

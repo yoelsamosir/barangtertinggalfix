@@ -68,4 +68,5 @@ export const API = {
   prefix: "/api",
   /** Semua endpoint di bawah prefix ini wajib login petugas. */
   petugas: "/api/petugas",
+  unduhLaporan: "/api/petugas/laporan/unduh",
 } as const;

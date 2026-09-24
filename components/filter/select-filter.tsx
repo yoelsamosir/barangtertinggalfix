@@ -10,13 +10,15 @@ import { useRouter } from "next/navigation";
 
 type Opsi = { label: string; href: string; nilai: string };
 
-type Props = { label: string; opsi: Opsi[]; aktif: string; labelSemua: string; hrefSemua: string };
+/** Tanpa `labelSemua`, tidak ada pilihan "semua" (mis. pilihan tahun). */
+type Props = { label: string; opsi: Opsi[]; aktif: string; labelSemua?: string; hrefSemua?: string };
 
 export function SelectFilter({ label, opsi, aktif, labelSemua, hrefSemua }: Props) {
   const router = useRouter();
 
   function pindah(nilai: string) {
-    router.push(opsi.find((o) => o.nilai === nilai)?.href ?? hrefSemua);
+    const tujuan = opsi.find((o) => o.nilai === nilai)?.href ?? hrefSemua;
+    if (tujuan) router.push(tujuan);
   }
 
   return (
@@ -27,7 +29,7 @@ export function SelectFilter({ label, opsi, aktif, labelSemua, hrefSemua }: Prop
         onChange={(e) => pindah(e.target.value)}
         className="h-10 rounded-lg border border-garis bg-permukaan px-3 text-sm focus:border-brand focus:outline-2 focus:outline-brand/30"
       >
-        <option value="">{labelSemua}</option>
+        {labelSemua && <option value="">{labelSemua}</option>}
         {opsi.map((o) => (
           <option key={o.nilai} value={o.nilai}>
             {o.label}

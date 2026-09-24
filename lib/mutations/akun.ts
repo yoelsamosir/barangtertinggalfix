@@ -29,3 +29,12 @@ export async function simpanPasswordBaru(supabase: Supabase, password: string): 
   }
   return ok();
 }
+
+/**
+ * Cabut sesi akun ini di perangkat LAIN (perangkat yang sedang dipakai tetap login).
+ * Gagal di sini tidak membatalkan ganti password — cukup dicatat.
+ */
+export async function keluarkanSesiLain(supabase: Supabase): Promise<void> {
+  const { error } = await supabase.auth.signOut({ scope: "others" });
+  if (error) console.error("[auth] keluarkan sesi lain", error);
+}

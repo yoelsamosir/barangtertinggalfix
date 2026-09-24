@@ -31,6 +31,14 @@
   --color-peringatan: #6b5310;
   --color-peringatan-muda: #fbf1cf;
 
+  /*
+   * Seri grafik, urutan tetap (seri 1, seri 2, ...). Divalidasi untuk buta warna:
+   * merah logo + emas tua lolos ΔE 13,7 (deutan) & kontras >= 3:1. Merah + hijau
+   * logo GAGAL (ΔE 5,7), jadi jangan dipakai berpasangan di grafik.
+   */
+  --color-seri-1: #b11e21;
+  --color-seri-2: #a8851a;
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -43,4 +51,15 @@ body {
   background: var(--color-latar);
   color: var(--color-teks);
   font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Cetak / simpan PDF: latar putih, warna grafik tetap tercetak. Elemen navigasi disembunyikan lewat kelas print:hidden. */
+@media print {
+  @page {
+    margin: 15mm;
+  }
+  body {
+    background: #fff;
+    print-color-adjust: exact;
+  }
 }

@@ -1,6 +1,6 @@
 import "server-only";
 import { pastikanPetugas } from "@/lib/auth";
-import { cocokkanPasswordLama, perbaruiNamaProfil, simpanPasswordBaru } from "@/lib/mutations/akun";
+import { cocokkanPasswordLama, keluarkanSesiLain, perbaruiNamaProfil, simpanPasswordBaru } from "@/lib/mutations/akun";
 import { gagalValidasi, ok, type Hasil } from "@/lib/result";
 import { revalidasiDashboard } from "@/lib/revalidate";
 import { createClient } from "@/lib/supabase/server";
@@ -21,7 +21,12 @@ export async function ubahProfil(input: unknown): Promise<Hasil> {
   return ok(undefined, "Profil berhasil diperbarui.");
 }
 
-/** Wajib password lama (dibatasi 5 percobaan / 15 menit oleh database). */
+/**
+ * Wajib password lama (dibatasi 5 percobaan / 15 menit oleh database).
+ * Setelah berhasil, sesi di perangkat lain dicabut (mis. bila password diganti karena bocor).
+ * Catatan: yang dicabut adalah refresh token; token akses yang sudah terbit tetap sah
+ * sampai kedaluwarsa (jwt_expiry, 1 jam), jadi perangkat lain keluar paling lambat 1 jam kemudian.
+ */
 export async function gantiPassword(input: unknown): Promise<Hasil> {
   await pastikanPetugas();
 
@@ -36,5 +41,9 @@ export async function gantiPassword(input: unknown): Promise<Hasil> {
   const hasil = await simpanPasswordBaru(supabase, parsed.data.password_baru);
   if (!hasil.ok) return hasil;
 
-  return ok(undefined, "Password berhasil diganti.");
+  await keluarkanSesiLain(supabase);
+  return ok(
+    undefined,
+    "Password berhasil diganti. Perangkat lain yang login dengan akun ini akan keluar otomatis paling lambat 1 jam lagi.",
+  );
 }

@@ -85,7 +85,8 @@ app/error.tsx, not-found.tsx, global-error.tsx   halaman gagal / 404
 
 components/
   ui/       blok dasar tanpa pengetahuan bisnis: tombol, alert, badge, paginasi, skeleton,
-            KepalaHalaman, KartuStatistik, TabelData (tabel desktop / kartu HP), DialogKonfirmasi, PesanInfo
+            KepalaHalaman, KartuStatistik, TabelData (tabel desktop / kartu HP), DialogKonfirmasi, PesanInfo,
+            GrafikBatang (HTML/CSS tanpa library; warna seri --color-seri-* sudah diuji buta warna)
   form/     FormHasil (menjalankan Server Action, membagikan Hasil), Field/Input, PesanForm, TombolKirim,
             InputPassword, InputFoto (foto dikecilkan di browser: lib/browser/kecilkan-foto.ts), Centang,
             AmbilFotoKamera (getUserMedia + cadangan <input capture>; kamera dimatikan setelah jepret)
@@ -113,6 +114,7 @@ Warna memakai token di `app/globals.css` (palet logo Balai Yanpus), bukan kode w
 | Label & daftar pilihan (kategori, status) | `lib/domain.ts` |
 | Path halaman | `lib/routes.ts` (jangan menulis string path di komponen) |
 | Kontak & identitas instansi | `lib/aplikasi.ts` |
+| Label & susunan laporan (halaman, cetak, CSV) | `lib/laporan.ts` |
 | Komponen dipakai lebih dari satu area | `components/ui` / `components/form` / `components/filter` |
 | Komponen khusus satu area | `components/<area>/` |
 

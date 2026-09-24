@@ -8,7 +8,7 @@ export function KepalaHalaman({ judul, children, aksi }: { judul: string; childr
         <h1 className="text-2xl font-semibold">{judul}</h1>
         {children && <div className="mt-1 text-sm text-muted">{children}</div>}
       </div>
-      {aksi && <div className="flex shrink-0 flex-wrap gap-2">{aksi}</div>}
+      {aksi && <div className="flex shrink-0 flex-wrap gap-2 print:hidden">{aksi}</div>}
     </div>
   );
 }

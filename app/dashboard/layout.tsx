@@ -22,7 +22,7 @@ export default async function LayoutDashboard({ children }: LayoutProps<"/dashbo
 
   return (
     <div className="flex flex-1">
-      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 border-r border-garis bg-permukaan lg:block">
+      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 border-r border-garis bg-permukaan lg:block print:hidden">
         <Sidebar petugas={petugas} lencana={lencana} />
       </aside>
 
@@ -30,7 +30,7 @@ export default async function LayoutDashboard({ children }: LayoutProps<"/dashbo
         <MenuMobile judul={APLIKASI.nama}>
           <Sidebar petugas={petugas} lencana={lencana} />
         </MenuMobile>
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 lg:py-8">{children}</main>
+        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 lg:py-8 print:p-0">{children}</main>
       </div>
     </div>
   );

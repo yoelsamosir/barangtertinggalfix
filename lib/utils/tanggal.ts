@@ -30,3 +30,10 @@ export function awalHariWIB(tanggal: string): string {
 export function akhirHariWIB(tanggal: string): string {
   return `${tanggal}T23:59:59.999+07:00`;
 }
+
+/** Nama bulan 1–12 dalam bahasa Indonesia. */
+export function namaBulan(bulan: number, bentuk: "long" | "short" = "long"): string {
+  return new Intl.DateTimeFormat("id-ID", { month: bentuk, timeZone: "UTC" }).format(
+    new Date(Date.UTC(2000, bulan - 1, 1)),
+  );
+}
