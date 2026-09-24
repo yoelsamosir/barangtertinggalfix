@@ -84,14 +84,17 @@ app/dashboard/       halaman petugas: layout memanggil requirePetugas() (login +
 app/error.tsx, not-found.tsx, global-error.tsx   halaman gagal / 404
 
 components/
-  ui/       blok dasar tanpa pengetahuan bisnis: tombol, alert, badge, paginasi, skeleton, ...
-  form/     FormHasil (menjalankan Server Action, membagikan Hasil), Field/Input, PesanForm, TombolKirim
-  filter/   filter lewat URL: KolomCari, ChipFilter
+  ui/       blok dasar tanpa pengetahuan bisnis: tombol, alert, badge, paginasi, skeleton,
+            KepalaHalaman, KartuStatistik, TabelData (tabel desktop / kartu HP), DialogKonfirmasi, PesanInfo
+  form/     FormHasil (menjalankan Server Action, membagikan Hasil), Field/Input, PesanForm, TombolKirim,
+            InputPassword, InputFoto (foto dikecilkan di browser: lib/browser/kecilkan-foto.ts), Centang
+  filter/   filter lewat URL: KolomCari, ChipFilter, SelectFilter
   turnstile/ widget captcha (membaca nonce CSP)
   barang/   tampilan barang yang dipakai publik & petugas: FotoBarang, IkonKategori
   publik/   komponen khusus halaman pengunjung
   auth/     form login
   dashboard/ kerangka petugas: menu (menu.ts), sidebar, laci menu HP, tombol keluar
+  petugas/  komponen halaman petugas per domain: barang/, klaim/, dashboard/, ...
 ```
 
 Warna memakai token di `app/globals.css` (palet logo Balai Yanpus), bukan kode warna langsung.

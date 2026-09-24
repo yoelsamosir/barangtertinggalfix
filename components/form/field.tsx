@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  type InputHTMLAttributes,
-  type ReactNode,
-  type SelectHTMLAttributes,
-  type TextareaHTMLAttributes,
-} from "react";
+import { createContext, useContext, type ComponentProps, type ReactNode } from "react";
 import { useFormHasil } from "./form-hasil";
 
 /**
@@ -85,17 +78,11 @@ function useAtributKontrol(nameProp: string | undefined, wajib: boolean | undefi
   };
 }
 
-export function Input({ className = "", name, required, ...props }: InputHTMLAttributes<HTMLInputElement>) {
+export function Input({ className = "", name, required, ...props }: ComponentProps<"input">) {
   return <input {...useAtributKontrol(name, required)} className={`${KELAS_KONTROL} ${className}`} {...props} />;
 }
 
-export function Textarea({
-  className = "",
-  name,
-  required,
-  rows = 4,
-  ...props
-}: TextareaHTMLAttributes<HTMLTextAreaElement>) {
+export function Textarea({ className = "", name, required, rows = 4, ...props }: ComponentProps<"textarea">) {
   return (
     <textarea
       {...useAtributKontrol(name, required)}
@@ -106,6 +93,6 @@ export function Textarea({
   );
 }
 
-export function Select({ className = "", name, required, ...props }: SelectHTMLAttributes<HTMLSelectElement>) {
+export function Select({ className = "", name, required, ...props }: ComponentProps<"select">) {
   return <select {...useAtributKontrol(name, required)} className={`${KELAS_KONTROL} ${className}`} {...props} />;
 }

@@ -1,10 +1,10 @@
 "use client";
 
 import { Eye, EyeOff } from "lucide-react";
-import { useState, type InputHTMLAttributes } from "react";
+import { useState, type ComponentProps } from "react";
 import { Input } from "./field";
 
-type Props = Omit<InputHTMLAttributes<HTMLInputElement>, "type">;
+type Props = Omit<ComponentProps<"input">, "type">;
 
 /** Kolom password dengan tombol tampilkan/sembunyikan (memudahkan mengetik di HP). */
 export function InputPassword({ className = "", ...props }: Props) {

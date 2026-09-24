@@ -9,6 +9,7 @@ export const ROUTES = {
   barang: "/dashboard/barang",
   barangTambah: "/dashboard/barang/tambah",
   barangDetail: (id: string) => `/dashboard/barang/${id}`,
+  barangUbah: (id: string) => `/dashboard/barang/${id}/ubah`,
   klaim: "/dashboard/klaim",
   klaimDetail: (id: string) => `/dashboard/klaim/${id}`,
   serahTerima: (claimId: string) => `/dashboard/klaim/${claimId}/serah-terima`,
@@ -26,6 +27,16 @@ export function denganQuery(path: string, params: Record<string, string | number
   }
   const s = q.toString();
   return s ? `${path}?${s}` : path;
+}
+
+/**
+ * Pesan singkat setelah sebuah aksi, dibawa lewat URL tujuan redirect
+ * (mis. /dashboard/barang/123?info=baru). Halaman tujuan menerjemahkannya.
+ */
+export const PARAM_INFO = "info";
+
+export function denganInfo(path: string, info: string): string {
+  return denganQuery(path, { [PARAM_INFO]: info });
 }
 
 /** Nama parameter URL halaman tujuan setelah login. */

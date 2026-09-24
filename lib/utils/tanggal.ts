@@ -9,9 +9,16 @@ export function tahunIniWIB(): number {
   return Number(hariIniWIB().slice(0, 4));
 }
 
-/** "2026-09-01" -> "1 September 2026". */
+/** Kolom `date` "2026-09-01" -> "1 September 2026". */
 export function formatTanggal(tanggal: string): string {
   return new Intl.DateTimeFormat("id-ID", { dateStyle: "long", timeZone: "UTC" }).format(new Date(tanggal));
+}
+
+/** Kolom `timestamptz` -> "24 Sep 2026, 14.05" dalam WIB. */
+export function formatWaktu(waktu: string): string {
+  return new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeStyle: "short", timeZone: ZONA_WAKTU }).format(
+    new Date(waktu),
+  );
 }
 
 /** "2026-09-01" -> awal hari tersebut dalam WIB (ISO timestamp). */
