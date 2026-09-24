@@ -7,22 +7,48 @@
 import sharp from "sharp";
 
 process.loadEnvFile(".env.local");
+
+function wajibEnv(nama: string): string {
+  const nilai = process.env[nama];
+  if (!nilai) {
+    console.error(`${nama} belum diisi di .env.local.`);
+    process.exit(1);
+  }
+  return nilai;
+}
+
 const BASE = process.env.UJI_API_URL ?? "http://127.0.0.1:3100";
-const SUPA = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const SUPA = wajibEnv("NEXT_PUBLIC_SUPABASE_URL");
+const ANON = wajibEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY");
 const CAPTCHA_UJI = "XXXX.DUMMY.TOKEN.XXXX"; // token dummy resmi Cloudflare
 
 let gagal = 0;
-const cek = (label, cond, info) => {
+const cek = (label: string, cond: unknown, info?: unknown) => {
   console.log(`${cond ? "OK  " : "FAIL"} ${label}${cond ? "" : " -> " + JSON.stringify(info).slice(0, 400)}`);
   if (!cond) gagal++;
 };
 
-const jar = new Map();
-async function req(method, path, { json, form, headers = {}, ip = "10.0.0.1", pakaiCookie = true } = {}) {
-  const h = { "x-forwarded-for": ip, ...headers };
+/** Isi respons API dibiarkan `any`: skrip uji memeriksa bentuknya sendiri lewat `cek`. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Respons = { status: number; data: any; headers: Headers };
+
+type OpsiReq = {
+  json?: unknown;
+  form?: FormData;
+  headers?: Record<string, string>;
+  ip?: string;
+  pakaiCookie?: boolean;
+};
+
+const jar = new Map<string, string>();
+async function req(
+  method: string,
+  path: string,
+  { json, form, headers = {}, ip = "10.0.0.1", pakaiCookie = true }: OpsiReq = {},
+): Promise<Respons> {
+  const h: Record<string, string> = { "x-forwarded-for": ip, ...headers };
   if (pakaiCookie && jar.size) h.cookie = [...jar].map(([k, v]) => `${k}=${v}`).join("; ");
-  let body;
+  let body: string | FormData | undefined;
   if (json) {
     h["content-type"] = "application/json";
     body = JSON.stringify(json);
@@ -38,7 +64,7 @@ async function req(method, path, { json, form, headers = {}, ip = "10.0.0.1", pa
     else jar.set(k, v);
   }
   const text = await res.text();
-  let data;
+  let data: unknown;
   try {
     data = JSON.parse(text);
   } catch {
@@ -51,7 +77,8 @@ const jpg = Buffer.from(
   "/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wAALCAABAAEBAREA/8QAFAABAAAAAAAAAAAAAAAAAAAAA//EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAD8AN//Z",
   "base64",
 );
-const fotoBlob = (buf, nama = "f.jpg", type = "image/jpeg") => new File([buf], nama, { type });
+const fotoBlob = (buf: Uint8Array, nama = "f.jpg", type = "image/jpeg") =>
+  new File([new Uint8Array(buf)], nama, { type });
 
 // ---------------------------------------------------------------- header
 const beranda = await req("GET", "/");
@@ -252,6 +279,7 @@ cek(
 );
 await req("DELETE", `/api/petugas/barang/${denganExif.data.data.id}`);
 
+// `duplex` wajib di Node untuk body berupa stream, tetapi belum ada di tipe RequestInit.
 const tanpaPanjang = await fetch(`${BASE}/api/petugas/akun/profil`, {
   method: "PATCH",
   headers: { cookie: [...jar].map(([k, v]) => `${k}=${v}`).join("; "), "content-type": "application/json" },
@@ -262,7 +290,7 @@ const tanpaPanjang = await fetch(`${BASE}/api/petugas/akun/profil`, {
     },
   }),
   duplex: "half",
-});
+} as RequestInit & { duplex: "half" });
 cek("body tanpa Content-Length (chunked) -> 400", tanpaPanjang.status === 400, tanpaPanjang.status);
 
 const masaDepan = await req("PATCH", `/api/petugas/barang/${barangBaru}`, {

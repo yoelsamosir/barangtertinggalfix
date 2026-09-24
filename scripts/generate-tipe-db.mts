@@ -6,7 +6,7 @@ import { writeFileSync } from "node:fs";
 
 const TUJUAN = "lib/supabase/database.types.ts";
 
-let hasil;
+let hasil: string;
 try {
   hasil = execSync("npx supabase gen types typescript --local", {
     encoding: "utf8",

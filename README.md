@@ -118,7 +118,7 @@ Aturan kecil:
 
 ## Menjalankan lokal
 
-Butuh Node.js 20+ dan Docker Desktop.
+Butuh Node.js 22.18+ (disarankan 24 LTS) dan Docker Desktop.
 
 > **Simpan proyek di drive NTFS** (mis. `C:\proyek\`). Di drive FAT32/exFAT, `npm run build` gagal
 > (tidak mendukung symlink yang dipakai Next.js untuk `sharp`) dan git menolak repo (*dubious ownership*).

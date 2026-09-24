@@ -2,6 +2,9 @@
   "name": "barangtertinggalfix",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=22.18"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -14,8 +17,8 @@
     "db:start": "supabase start",
     "db:reset": "supabase db reset",
     "db:test": "supabase test db",
-    "db:types": "node scripts/generate-tipe-db.mjs",
-    "test:api": "node scripts/uji-api.mjs"
+    "db:types": "node scripts/generate-tipe-db.mts",
+    "test:api": "node scripts/uji-api.mts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
