@@ -2,6 +2,7 @@
 
 import { ImagePlus } from "lucide-react";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
+import { isiInputFile } from "@/lib/browser/isi-input-file";
 import { kecilkanFoto } from "@/lib/browser/kecilkan-foto";
 import { Input } from "./field";
 
@@ -35,11 +36,7 @@ export function InputFoto({ fotoAwal, onPilih }: { fotoAwal?: string | null; onP
     const kecil = await kecilkanFoto(asli);
     setMemproses(false);
 
-    if (kecil !== asli && inputRef.current) {
-      const ganti = new DataTransfer();
-      ganti.items.add(kecil);
-      inputRef.current.files = ganti.files;
-    }
+    if (kecil !== asli && inputRef.current) isiInputFile(inputRef.current, kecil);
     setPratinjau(URL.createObjectURL(kecil));
     onPilih?.(true);
   }
