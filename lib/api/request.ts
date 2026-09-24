@@ -1,12 +1,10 @@
 import "server-only";
 import type { NextRequest } from "next/server";
+import { MAKS_BODY_REQUEST } from "@/lib/config";
 import { ambilFile, formToObject } from "@/lib/form";
 import { gagal, ok, type Hasil } from "@/lib/result";
 
 /** Membaca request REST API. */
-
-/** Sama dengan batas Server Action; foto maks 2 MB + field lain. */
-const MAKS_BODY_BYTE = 3 * 1024 * 1024;
 
 export type KonteksId = { params: Promise<{ id: string }> };
 
@@ -15,10 +13,18 @@ export type BodyRequest = {
   file: (nama: string) => File | null;
 };
 
-/** Menerima JSON, atau multipart/form-data bila ada foto. */
+/**
+ * Menerima JSON, atau multipart/form-data bila ada foto.
+ * Content-Length wajib, agar batas ukuran tidak bisa dilewati dengan
+ * body "chunked" tanpa panjang.
+ */
 export async function bacaBody(request: Request): Promise<Hasil<BodyRequest>> {
-  if (Number(request.headers.get("content-length") ?? 0) > MAKS_BODY_BYTE) {
-    return gagal("validasi", "Ukuran request maksimal 3 MB.");
+  const panjang = request.headers.get("content-length");
+  if (panjang === null) {
+    return gagal("validasi", "Header Content-Length wajib dikirim.");
+  }
+  if (Number(panjang) > MAKS_BODY_REQUEST) {
+    return gagal("validasi", "Ukuran request maksimal 4,5 MB.");
   }
 
   const tipe = request.headers.get("content-type") ?? "";

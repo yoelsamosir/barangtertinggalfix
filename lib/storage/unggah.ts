@@ -1,10 +1,10 @@
 import "server-only";
 import { gagal, ok, type Hasil } from "@/lib/result";
 import type { Supabase } from "@/lib/supabase/types";
-import { validasiFoto } from "./validasi-foto";
+import { olahFoto } from "./olah-foto";
 
 /**
- * Validasi lalu unggah foto ke bucket dengan nama acak.
+ * Periksa & proses ulang foto, lalu unggah ke bucket dengan nama acak.
  * Mengembalikan path file di dalam bucket.
  */
 export async function unggahFoto(
@@ -13,7 +13,7 @@ export async function unggahFoto(
   file: File,
   folder?: string,
 ): Promise<Hasil<string>> {
-  const foto = await validasiFoto(file);
+  const foto = await olahFoto(file);
   if (!foto.ok) return foto;
 
   const nama = `${crypto.randomUUID()}.${foto.data.ekstensi}`;
@@ -21,7 +21,7 @@ export async function unggahFoto(
 
   const { error } = await supabase.storage
     .from(bucket)
-    .upload(path, file, { contentType: foto.data.contentType, upsert: false });
+    .upload(path, foto.data.isi, { contentType: foto.data.contentType, upsert: false });
 
   if (error) {
     console.error(`[storage] unggah ke ${bucket}`, error);

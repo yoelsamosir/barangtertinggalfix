@@ -35,6 +35,7 @@ supabase/migrations/
   06_fungsi_laporan   statistik dashboard & laporan
   07_rate_limit       tabel & fungsi pembatas percobaan
   08_akun             cek password lama
+  09_perbaikan_keamanan  cek kuota tanpa memakai (anti kunci akun), foto bukti wajib di folder klaimnya
 supabase/seed.sql     data contoh (lokal saja)
 supabase/tests/       tes pgTAP (34 tes alur + keamanan)
 
@@ -77,6 +78,10 @@ lib/
 
 Butuh Node.js 20+ dan Docker Desktop.
 
+> **Simpan proyek di drive NTFS** (mis. `C:\proyek\`). Di drive FAT32/exFAT, `npm run build` gagal
+> (tidak mendukung symlink yang dipakai Next.js untuk `sharp`) dan git menolak repo (*dubious ownership*).
+> Cek format drive: `Get-Volume -DriveLetter D`.
+
 ```bash
 npm install
 npm run db:start            # Supabase lokal (migrasi + seed otomatis)
@@ -85,7 +90,7 @@ npm run dev
 ```
 
 Login petugas lokal: `petugas@dpad.test` / `petugas123` (captcha lokal memakai kunci uji Cloudflare yang selalu lolos).
-Supabase Studio lokal: http://127.0.0.1:54323
+Supabase Studio lokal: http://127.0.0.1:55323 (port lokal 55xxx karena rentang 543xx sering dicadangkan Windows/Hyper-V)
 
 | Perintah | Fungsi |
 |---|---|

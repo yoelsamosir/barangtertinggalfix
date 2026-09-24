@@ -27,14 +27,15 @@ Semua endpoint membalas JSON dengan bentuk yang sama:
 - Login lewat `POST /api/auth/login` → server memasang **cookie sesi** (httpOnly tidak tersedia pada `@supabase/ssr`; dilindungi CSP).
 - Semua endpoint `/api/petugas/*` wajib cookie sesi petugas **aktif**.
 - Request `POST/PATCH/DELETE` dari situs lain ditolak (403). Klien non-browser (Postman/curl) tidak mengirim header `Origin` sehingga tetap bisa dipakai untuk pengujian.
-- Body: `application/json`, atau `multipart/form-data` untuk endpoint yang menerima foto (maks 3 MB per request, foto maks 2 MB JPG/PNG/WEBP — isi file diperiksa, bukan hanya ekstensi).
+- Body: `application/json`, atau `multipart/form-data` untuk endpoint yang menerima foto. Header `Content-Length` wajib; maks 4,5 MB per request.
+- Foto: JPG/PNG/WEBP maks 4 MB (isi file diperiksa, bukan hanya ekstensi). Server membuat ulang foto sebagai **WEBP maks 1600 px tanpa metadata EXIF** (lokasi GPS & tipe HP dibuang).
 
 ## Rate limit
 
 | Aksi | Batas |
 |---|---|
 | Ajukan klaim | 5 / jam per IP |
-| Login | 20 / 15 menit per IP, **dan** 5 / 15 menit per email |
+| Login | 20 / 15 menit per IP, **dan** 5 password salah / 15 menit per email (dihitung setelah captcha lolos, agar akun tidak bisa dikunci orang tanpa captcha) |
 | Cek password lama (ganti password) | 5 / 15 menit per akun (dijaga database) |
 | Klaim menunggu per nomor HP | maks 3 (dijaga database) |
 
@@ -83,7 +84,7 @@ Nomor HP boleh `+62…`/`62…`/`08…` — disimpan sebagai `08…`.
 Salah email/password selalu dijawab `"Email atau password salah."`.
 
 ### `POST /api/auth/logout`
-Mencabut sesi dan menghapus cookie.
+Keluar dari perangkat ini saja (sesi di perangkat lain tetap) dan menghapus cookie.
 
 ### `GET /api/auth/sesi`
 Petugas yang sedang login, atau 401.

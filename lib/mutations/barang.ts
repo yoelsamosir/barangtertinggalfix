@@ -30,9 +30,11 @@ export async function ambilFotoPathBarang(supabase: Supabase, id: string): Promi
 }
 
 export async function perbaruiBarang(supabase: Supabase, id: string, data: DataBarang): Promise<Hasil> {
-  const { error } = await supabase.from("items").update(data).eq("id", id);
+  const { data: diubah, error } = await supabase.from("items").update(data).eq("id", id).select("id");
 
   if (error) return gagalDb(error, "Gagal memperbarui barang.");
+  // Update 0 baris bukan error di Postgres: barang sudah terhapus di tengah proses.
+  if (!diubah.length) return gagal("tidak_ditemukan", "Barang tidak ditemukan.");
   return ok();
 }
 

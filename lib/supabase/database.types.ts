@@ -329,6 +329,10 @@ export type Database = {
       }
       cek_password_sendiri: { Args: { p_password: string }; Returns: boolean }
       is_petugas: { Args: never; Returns: boolean }
+      kuota_tersedia: {
+        Args: { p_jendela_detik: number; p_kunci: string; p_maks: number }
+        Returns: boolean
+      }
       laporan_per_bulan: {
         Args: {
           p_kategori?: Database["public"]["Enums"]["item_kategori"]

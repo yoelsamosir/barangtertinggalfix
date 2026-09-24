@@ -17,9 +17,9 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     serverActions: {
-      // Foto barang & bukti serah terima maks 2 MB + field form lain.
-      // (Batas body request fungsi Vercel adalah 4,5 MB.)
-      bodySizeLimit: "3mb",
+      // Foto maks 4 MB + field form lain. Sama dengan MAKS_BODY_REQUEST
+      // di lib/config.ts (batas body request fungsi Vercel adalah 4,5 MB).
+      bodySizeLimit: "4.5mb",
     },
   },
 };

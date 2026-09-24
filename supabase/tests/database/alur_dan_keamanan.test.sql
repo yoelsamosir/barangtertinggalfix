@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(34);
+select plan(39);
 
 -- ---------------------------------------------------------------------
 -- Data uji (sebagai postgres)
@@ -106,11 +106,15 @@ select throws_ok(
   'P0001', null, 'Waktu kehilangan di masa depan ditolak'
 );
 
+select ok(public.kuota_tersedia('uji:rate', 2, 60), 'Kuota baru masih tersedia');
 select results_eq(
   $$select public.pakai_kuota('uji:rate', 2, 60) from generate_series(1, 3)$$,
   $$values (true), (true), (false)$$,
   'Rate limit menolak setelah kuota habis'
 );
+select ok(not public.kuota_tersedia('uji:rate', 2, 60), 'Cek kuota melihat kuota sudah habis');
+select ok(public.kuota_tersedia('uji:lain', 2, 60), 'Cek kuota tidak memakai kuota');
+select ok(public.kuota_tersedia('uji:lain', 2, 60), 'Cek kuota berulang tetap tersedia');
 
 -- =====================================================================
 -- PETUGAS NONAKTIF
@@ -175,14 +179,23 @@ select throws_ok(
   'P0001', null, 'Pengembalian tanpa foto yang terunggah ditolak'
 );
 
--- simulasikan foto yang sudah diunggah
+-- simulasikan foto yang sudah diunggah: satu di folder klaim lain, satu di folder klaim ini
 reset role;
-insert into storage.objects (bucket_id, name) values ('bukti-serah-terima', 'uji/foto.jpg');
+insert into storage.objects (bucket_id, name)
+values ('bukti-serah-terima', (select id from public.claims where no_hp = '081111111111') || '/lain.jpg'),
+       ('bukti-serah-terima', (select id from public.claims where no_hp = '081234567890') || '/foto.jpg');
 set local role authenticated;
 
+select throws_ok(
+  $$select public.proses_pengembalian((select id from public.claims where no_hp = '081234567890'),
+                                      (select id from public.claims where no_hp = '081111111111') || '/lain.jpg',
+                                      true, null)$$,
+  'P0001', null, 'Foto dari folder klaim lain ditolak'
+);
 select lives_ok(
   $$select public.proses_pengembalian((select id from public.claims where no_hp = '081234567890'),
-                                      'uji/foto.jpg', true, 'Diserahkan langsung')$$,
+                                      (select id from public.claims where no_hp = '081234567890') || '/foto.jpg',
+                                      true, 'Diserahkan langsung')$$,
   'Petugas memproses pengembalian'
 );
 select results_eq(

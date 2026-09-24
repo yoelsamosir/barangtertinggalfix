@@ -9,8 +9,20 @@ export const BUCKET = {
   buktiSerahTerima: "bukti-serah-terima",
 } as const;
 
-/** Sama dengan file_size_limit bucket di migrasi 3. */
-export const MAKS_UKURAN_FOTO = 2 * 1024 * 1024;
+/**
+ * Foto yang DIUNGGAH (foto HP biasanya 3–5 MB). Setelah diproses ulang
+ * (WEBP, sisi maks 1600 px) hasilnya jauh di bawah batas bucket 2 MB.
+ */
+export const MAKS_UKURAN_FOTO = 4 * 1024 * 1024;
+export const SISI_MAKS_FOTO = 1600;
+/** Tolak gambar raksasa (serangan "decompression bomb"); 60 MP cukup untuk kamera HP. */
+export const MAKS_PIKSEL_FOTO = 60_000_000;
+
+/**
+ * Batas satu request berisi foto + field form. Batas Vercel adalah 4,5 MB,
+ * jadi nilai ini tidak boleh lebih besar.
+ */
+export const MAKS_BODY_REQUEST = 4.5 * 1024 * 1024;
 
 /** Masa berlaku signed URL foto bukti serah terima. */
 export const SIGNED_URL_TTL_DETIK = 60 * 5;

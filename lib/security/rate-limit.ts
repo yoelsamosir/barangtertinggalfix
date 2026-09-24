@@ -24,7 +24,8 @@ export const ATURAN = {
     jendelaDetik: 15 * 60,
     pesan: "Terlalu banyak percobaan login. Silakan coba lagi dalam 15 menit.",
   },
-  loginPerEmail: {
+  /** Hanya menghitung password SALAH setelah captcha lolos (anti penguncian akun). */
+  loginGagalPerEmail: {
     nama: "login:email",
     maks: 5,
     jendelaDetik: 15 * 60,
@@ -34,7 +35,16 @@ export const ATURAN = {
 
 /** Pakai satu kuota. Bila gagal dicek (database error), request ditolak. */
 export async function batasi(aturan: Aturan, nilai: string): Promise<Hasil> {
-  const { data: masihBoleh, error } = await createAdminClient().rpc("pakai_kuota", {
+  return jalankanRpc("pakai_kuota", aturan, nilai);
+}
+
+/** Cek sisa kuota tanpa memakainya (untuk menghitung hanya percobaan yang gagal). */
+export async function cekKuota(aturan: Aturan, nilai: string): Promise<Hasil> {
+  return jalankanRpc("kuota_tersedia", aturan, nilai);
+}
+
+async function jalankanRpc(fungsi: "pakai_kuota" | "kuota_tersedia", aturan: Aturan, nilai: string): Promise<Hasil> {
+  const { data: masihBoleh, error } = await createAdminClient().rpc(fungsi, {
     p_kunci: `${aturan.nama}:${hmac(nilai)}`,
     p_maks: aturan.maks,
     p_jendela_detik: aturan.jendelaDetik,

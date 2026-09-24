@@ -1,9 +1,11 @@
-// Uji end-to-end REST API (59 skenario) terhadap server LOKAL.
+// Uji end-to-end REST API (60 skenario) terhadap server LOKAL.
 //
 // Persiapan:  npm run db:reset && npm run build && npx next start -p 3100
 // Jalankan :  npm run test:api
 // Memerlukan internet (verifikasi token uji Cloudflare Turnstile).
 // Data berubah selama tes — jalankan `npm run db:reset` sebelum mengulang.
+import sharp from "sharp";
+
 process.loadEnvFile(".env.local");
 const BASE = process.env.UJI_API_URL ?? "http://127.0.0.1:3100";
 const SUPA = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -140,6 +142,28 @@ const ubah = await req("PATCH", `/api/petugas/barang/${barangBaru}`, {
 });
 cek("PATCH /api/petugas/barang/:id (JSON)", ubah.status === 200, ubah);
 cek("  foto lama tetap (tidak dihapus)", (await req("GET", `/api/petugas/barang/${barangBaru}`)).data.data.foto_path === detail.data.data.foto_path);
+
+// Foto HP berisi EXIF: harus dibuang & disimpan ulang sebagai WEBP kecil
+const fotoExif = await sharp({ create: { width: 3000, height: 2000, channels: 3, background: "#c33" } })
+  .jpeg()
+  .withExif({ IFD0: { Copyright: "LOKASI-RAHASIA" } })
+  .toBuffer();
+const fExif = fd(); fExif.set("foto", fotoBlob(fotoExif));
+const denganExif = await req("POST", "/api/petugas/barang", { form: fExif });
+const urlExif = (await req("GET", `/api/petugas/barang/${denganExif.data.data.id}`)).data.data.foto_url;
+const tersimpan = Buffer.from(await (await fetch(urlExif)).arrayBuffer());
+const meta = await sharp(tersimpan).metadata();
+cek("foto disimpan ulang: WEBP, maks 1600 px, tanpa EXIF",
+  meta.format === "webp" && Math.max(meta.width, meta.height) <= 1600 && !meta.exif && !tersimpan.includes("LOKASI-RAHASIA"), meta);
+await req("DELETE", `/api/petugas/barang/${denganExif.data.data.id}`);
+
+const tanpaPanjang = await fetch(`${BASE}/api/petugas/akun/profil`, {
+  method: "PATCH",
+  headers: { cookie: [...jar].map(([k, v]) => `${k}=${v}`).join("; "), "content-type": "application/json" },
+  body: new ReadableStream({ start(c) { c.enqueue(new TextEncoder().encode('{"nama":"x"}')); c.close(); } }),
+  duplex: "half",
+});
+cek("body tanpa Content-Length (chunked) -> 400", tanpaPanjang.status === 400, tanpaPanjang.status);
 
 const masaDepan = await req("PATCH", `/api/petugas/barang/${barangBaru}`, {
   json: { nama_barang: "x", kategori: "lainnya", lokasi_ditemukan: "x", tanggal_ditemukan: "2099-01-01" },
