@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { API, ROUTES } from "@/lib/routes";
+import { API, loginLaluKembaliKe, ROUTES } from "@/lib/routes";
 import { buatCsp, buatNonce } from "@/lib/security/csp";
 import { isRequestLintasSitus } from "@/lib/security/origin";
 import { denganCookieSesi, perbaruiSesi } from "@/lib/supabase/proxy";
@@ -29,7 +29,14 @@ async function jagaApi(request: NextRequest) {
   return response;
 }
 
-/** Halaman: pasang CSP ber-nonce, lalu arahkan tamu/petugas ke halaman yang sesuai. */
+/**
+ * Halaman: pasang CSP ber-nonce, dan arahkan tamu yang membuka /dashboard ke
+ * /login?kembali=<halaman itu>.
+ *
+ * Sengaja TIDAK mengarahkan /login -> /dashboard di sini: proxy hanya tahu ada
+ * sesi, bukan apakah akunnya masih aktif. Halaman login sendiri yang memeriksa
+ * (getPetugas), sehingga akun yang dinonaktifkan tidak terjebak redirect bolak-balik.
+ */
 async function jagaHalaman(request: NextRequest) {
   const nonce = buatNonce();
   const csp = buatCsp(nonce);
@@ -39,13 +46,9 @@ async function jagaHalaman(request: NextRequest) {
     "Content-Security-Policy": csp,
   });
 
-  const { pathname } = request.nextUrl;
-  const tujuan =
-    !sudahLogin && pathname.startsWith(ROUTES.dashboard)
-      ? ROUTES.login
-      : sudahLogin && pathname === ROUTES.login
-        ? ROUTES.dashboard
-        : null;
+  const { pathname, search } = request.nextUrl;
+  const halamanPetugas = pathname === ROUTES.dashboard || pathname.startsWith(`${ROUTES.dashboard}/`);
+  const tujuan = !sudahLogin && halamanPetugas ? loginLaluKembaliKe(pathname + search) : null;
 
   const hasil = tujuan ? denganCookieSesi(NextResponse.redirect(new URL(tujuan, request.url)), response) : response;
 

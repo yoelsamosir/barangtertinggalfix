@@ -87,11 +87,14 @@ cek("halaman punya CSP ber-nonce", /script-src 'self' 'nonce-[^']+' 'strict-dyna
 cek("header X-Frame-Options DENY", beranda.headers.get("x-frame-options") === "DENY");
 cek("header nosniff", beranda.headers.get("x-content-type-options") === "nosniff");
 cek("header x-powered-by disembunyikan", !beranda.headers.get("x-powered-by"));
-const dash = await req("GET", "/dashboard");
+const dash = await req("GET", "/dashboard/klaim?status=menunggu");
+const lokasiDash = new URL(dash.headers.get("location") ?? "/", BASE);
 cek(
-  "halaman /dashboard tanpa login -> redirect /login",
-  dash.status === 307 && dash.headers.get("location")?.endsWith("/login"),
-  dash.status,
+  "halaman petugas tanpa login -> redirect /login?kembali=<halaman itu>",
+  dash.status === 307 &&
+    lokasiDash.pathname === "/login" &&
+    lokasiDash.searchParams.get("kembali") === "/dashboard/klaim?status=menunggu",
+  dash.headers.get("location"),
 );
 
 // ---------------------------------------------------------------- publik

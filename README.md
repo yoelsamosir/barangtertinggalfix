@@ -79,7 +79,8 @@ lib/
 
 ```
 app/(publik)/        halaman pengunjung (header + footer bersama): beranda, detail barang, form klaim
-app/dashboard/       halaman petugas (wajib login)
+app/login/           halaman masuk petugas (?kembali= halaman tujuan, divalidasi hanya /dashboard/...)
+app/dashboard/       halaman petugas: layout memanggil requirePetugas() (login + akun aktif)
 app/error.tsx, not-found.tsx, global-error.tsx   halaman gagal / 404
 
 components/
@@ -89,6 +90,8 @@ components/
   turnstile/ widget captcha (membaca nonce CSP)
   barang/   tampilan barang yang dipakai publik & petugas: FotoBarang, IkonKategori
   publik/   komponen khusus halaman pengunjung
+  auth/     form login
+  dashboard/ kerangka petugas: menu (menu.ts), sidebar, laci menu HP, tombol keluar
 ```
 
 Warna memakai token di `app/globals.css` (palet logo Balai Yanpus), bukan kode warna langsung.

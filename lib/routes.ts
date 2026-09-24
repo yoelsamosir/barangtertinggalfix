@@ -28,6 +28,31 @@ export function denganQuery(path: string, params: Record<string, string | number
   return s ? `${path}?${s}` : path;
 }
 
+/** Nama parameter URL halaman tujuan setelah login. */
+export const PARAM_KEMBALI = "kembali";
+
+/** /login?kembali=/dashboard/klaim/123 — dipakai saat halaman petugas dibuka tanpa sesi. */
+export function loginLaluKembaliKe(tujuan: string): string {
+  return denganQuery(ROUTES.login, { [PARAM_KEMBALI]: tujuan });
+}
+
+/**
+ * Tujuan setelah login yang AMAN: hanya path internal di bawah /dashboard.
+ * Selain itu (URL situs lain, "//evil.com", nilai kosong) -> /dashboard,
+ * agar parameter `kembali` tidak bisa dipakai untuk open redirect.
+ */
+export function tujuanSetelahLogin(kembali: unknown): string {
+  if (typeof kembali !== "string" || !kembali.startsWith("/")) return ROUTES.dashboard;
+  try {
+    const ASAL = "http://lokal";
+    const url = new URL(kembali, ASAL);
+    const diDashboard = url.pathname === ROUTES.dashboard || url.pathname.startsWith(`${ROUTES.dashboard}/`);
+    return url.origin === ASAL && diDashboard ? url.pathname + url.search : ROUTES.dashboard;
+  } catch {
+    return ROUTES.dashboard;
+  }
+}
+
 export const API = {
   prefix: "/api",
   /** Semua endpoint di bawah prefix ini wajib login petugas. */
