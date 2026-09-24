@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, type ComponentProps, type ReactNode } from "react";
+import { createContext, useContext, useId, type ComponentProps, type ReactNode } from "react";
 import { useFormHasil } from "./form-hasil";
 
 /**
@@ -10,15 +10,19 @@ import { useFormHasil } from "./form-hasil";
  * terdekat (nama field = kunci skema zod di lib/validation).
  */
 
-const FieldContext = createContext<{ name: string; adaPetunjuk: boolean } | null>(null);
+/**
+ * `id` unik per Field (useId), agar dua form dengan field bernama sama di satu
+ * halaman (mis. dua dialog berisi "catatan") tidak bentrok id/label.
+ */
+const FieldContext = createContext<{ name: string; id: string; adaPetunjuk: boolean } | null>(null);
 
 function useErrorField(name: string): string[] | undefined {
   const state = useFormHasil()?.state;
   return state && !state.ok ? state.fieldErrors?.[name] : undefined;
 }
 
-const idError = (name: string) => `${name}-error`;
-const idPetunjuk = (name: string) => `${name}-petunjuk`;
+const idError = (id: string) => `${id}-error`;
+const idPetunjuk = (id: string) => `${id}-petunjuk`;
 
 type FieldProps = {
   name: string;
@@ -31,21 +35,22 @@ type FieldProps = {
 
 export function Field({ name, label, wajib, petunjuk, children, className = "" }: FieldProps) {
   const errors = useErrorField(name);
+  const id = `${name}${useId()}`;
   return (
-    <FieldContext value={{ name, adaPetunjuk: Boolean(petunjuk) }}>
+    <FieldContext value={{ name, id, adaPetunjuk: Boolean(petunjuk) }}>
       <div className={`flex flex-col gap-1.5 ${className}`}>
-        <label htmlFor={name} className="text-sm font-medium">
+        <label htmlFor={id} className="text-sm font-medium">
           {label}
           {wajib && <span className="text-bahaya"> *</span>}
         </label>
         {children}
         {petunjuk && (
-          <p id={idPetunjuk(name)} className="text-xs text-muted">
+          <p id={idPetunjuk(id)} className="text-xs text-muted">
             {petunjuk}
           </p>
         )}
         {errors?.length ? (
-          <ul id={idError(name)} className="text-sm text-bahaya">
+          <ul id={idError(id)} className="text-sm text-bahaya">
             {errors.map((e) => (
               <li key={e}>{e}</li>
             ))}
@@ -68,9 +73,10 @@ function useAtributKontrol(nameProp: string | undefined, wajib: boolean | undefi
   if (!name) throw new Error("Kontrol form butuh `name` atau harus berada di dalam <Field>.");
 
   const invalid = Boolean(useErrorField(name)?.length);
-  const keterangan = [invalid && idError(name), field?.adaPetunjuk && idPetunjuk(name)].filter(Boolean).join(" ");
+  const id = field?.id ?? name;
+  const keterangan = [invalid && idError(id), field?.adaPetunjuk && idPetunjuk(id)].filter(Boolean).join(" ");
   return {
-    id: name,
+    id,
     name,
     required: wajib,
     "aria-invalid": invalid || undefined,

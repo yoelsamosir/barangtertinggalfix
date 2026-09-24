@@ -5,7 +5,7 @@ import { NavMenu } from "./nav-menu";
 import { TombolLogout } from "./tombol-logout";
 
 /** Isi panel navigasi petugas: logo, menu, identitas petugas, tombol keluar. */
-export function Sidebar({ petugas }: { petugas: Petugas }) {
+export function Sidebar({ petugas, lencana }: { petugas: Petugas; lencana?: Record<string, number> }) {
   return (
     <div className="flex h-full flex-col gap-6 p-4">
       <Link href={ROUTES.dashboard} className="block px-3 pt-2">
@@ -15,7 +15,7 @@ export function Sidebar({ petugas }: { petugas: Petugas }) {
       </Link>
 
       <div className="flex-1">
-        <NavMenu />
+        <NavMenu lencana={lencana} />
       </div>
 
       <div className="space-y-2 border-t border-garis pt-4">

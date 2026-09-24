@@ -67,3 +67,33 @@ export async function getKlaim(id: string) {
     barang: { ...data.barang, foto_url: urlFotoBarang(supabase, data.barang.foto_path) },
   };
 }
+
+/** Klaim lain atas barang yang sama (pesaing), terbaru di atas. */
+export async function klaimLainAtasBarang(itemId: string, kecualiKlaimId: string) {
+  await pastikanPetugas();
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("claims")
+    .select("id, nomor_klaim, nama_pengklaim, status, created_at")
+    .eq("item_id", itemId)
+    .neq("id", kecualiKlaimId)
+    .order("created_at", { ascending: false });
+  if (error) gagalMemuat("klaim lain", error);
+
+  return data;
+}
+
+/** Jumlah klaim yang menunggu verifikasi (angka di menu petugas). Hanya menghitung, tanpa mengambil baris. */
+export async function jumlahKlaimMenunggu(): Promise<number> {
+  await pastikanPetugas();
+  const supabase = await createClient();
+
+  const { count, error } = await supabase
+    .from("claims")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "menunggu");
+  if (error) gagalMemuat("jumlah klaim menunggu", error);
+
+  return count ?? 0;
+}

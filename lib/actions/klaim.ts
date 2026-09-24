@@ -1,7 +1,9 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { formToObject } from "@/lib/form";
 import type { Hasil } from "@/lib/result";
+import { denganInfo, ROUTES } from "@/lib/routes";
 import * as layanan from "@/lib/services/klaim";
 import { jalankan } from "./jalankan";
 
@@ -16,7 +18,15 @@ export async function ajukanKlaim(
   return layanan.ajukanKlaim(formToObject(formData));
 }
 
-/** PETUGAS. Field: claim_id, keputusan ('setujui' | 'tolak'), catatan (wajib bila tolak) */
+/**
+ * PETUGAS. Field: claim_id, keputusan ('setujui' | 'tolak'), catatan (wajib bila tolak).
+ * Berhasil -> kembali ke detail klaim dengan pesan keputusan.
+ */
 export async function verifikasiKlaim(_prev: Hasil | null, formData: FormData): Promise<Hasil> {
-  return jalankan(() => layanan.verifikasiKlaim(formToObject(formData)));
+  const isian = formToObject(formData);
+  const hasil = await jalankan(() => layanan.verifikasiKlaim(isian));
+  if (hasil.ok) {
+    redirect(denganInfo(ROUTES.klaimDetail(isian.claim_id), isian.keputusan === "setujui" ? "disetujui" : "ditolak"));
+  }
+  return hasil;
 }
