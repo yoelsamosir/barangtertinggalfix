@@ -1,0 +1,9 @@
+# Dibuat otomatis
+lib/supabase/database.types.ts
+package-lock.json
+.next/
+supabase/.temp/
+supabase/.branches/
+
+# Dokumen ditulis manual; jangan diformat ulang
+*.md

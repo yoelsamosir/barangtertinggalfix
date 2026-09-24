@@ -6,14 +6,7 @@ import { z } from "zod";
  */
 
 export type JenisGagal =
-  | "validasi"
-  | "captcha"
-  | "tidak_login"
-  | "akses"
-  | "tidak_ditemukan"
-  | "konflik"
-  | "batas"
-  | "server";
+  "validasi" | "captcha" | "tidak_login" | "akses" | "tidak_ditemukan" | "konflik" | "batas" | "server";
 
 export type FieldErrors = Record<string, string[] | undefined>;
 

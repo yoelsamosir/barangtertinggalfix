@@ -15,10 +15,7 @@ export async function proxy(request: NextRequest) {
 /** API: tolak CSRF, dan tolak /api/petugas tanpa sesi dengan 401 (bukan redirect). */
 async function jagaApi(request: NextRequest) {
   if (isRequestLintasSitus(request)) {
-    return NextResponse.json(
-      { ok: false, jenis: "akses", error: "Request lintas situs ditolak." },
-      { status: 403 },
-    );
+    return NextResponse.json({ ok: false, jenis: "akses", error: "Request lintas situs ditolak." }, { status: 403 });
   }
 
   const { response, sudahLogin } = await perbaruiSesi(request);
@@ -44,13 +41,13 @@ async function jagaHalaman(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
   const tujuan =
-    !sudahLogin && pathname.startsWith(ROUTES.dashboard) ? ROUTES.login
-    : sudahLogin && pathname === ROUTES.login ? ROUTES.dashboard
-    : null;
+    !sudahLogin && pathname.startsWith(ROUTES.dashboard)
+      ? ROUTES.login
+      : sudahLogin && pathname === ROUTES.login
+        ? ROUTES.dashboard
+        : null;
 
-  const hasil = tujuan
-    ? denganCookieSesi(NextResponse.redirect(new URL(tujuan, request.url)), response)
-    : response;
+  const hasil = tujuan ? denganCookieSesi(NextResponse.redirect(new URL(tujuan, request.url)), response) : response;
 
   hasil.headers.set("Content-Security-Policy", csp);
   return hasil;

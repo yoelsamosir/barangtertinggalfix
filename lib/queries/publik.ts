@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { PAGE_SIZE } from "@/lib/config";
 import type { StatusPublik } from "@/lib/domain";
 import { gagalMemuat, isIdTidakValid } from "@/lib/errors";
@@ -48,7 +49,8 @@ export async function cariBarangPublik(filter: FilterBarangPublik, halaman = 1) 
   };
 }
 
-export async function getBarangPublik(id: string): Promise<BarangPublik | null> {
+/** Di-cache per request: dipakai generateMetadata dan halaman sekaligus. */
+export const getBarangPublik = cache(async (id: string): Promise<BarangPublik | null> => {
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("barang_publik_detail", { p_id: id });
   if (error) {
@@ -56,4 +58,4 @@ export async function getBarangPublik(id: string): Promise<BarangPublik | null> 
     gagalMemuat("detail barang", error);
   }
   return data[0] ? keBarangPublik(supabase, data[0]) : null;
-}
+});

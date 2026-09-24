@@ -42,6 +42,15 @@ export const KATEGORI = kunci(KATEGORI_LABEL);
 export const ITEM_STATUS = kunci(ITEM_STATUS_LABEL);
 export const CLAIM_STATUS = kunci(CLAIM_STATUS_LABEL);
 
+/** Pasangan nilai–label siap pakai untuk <select>, chip filter, dll. */
+export const OPSI_KATEGORI = opsi(KATEGORI_LABEL);
+export const OPSI_ITEM_STATUS = opsi(ITEM_STATUS_LABEL);
+export const OPSI_CLAIM_STATUS = opsi(CLAIM_STATUS_LABEL);
+
 function kunci<K extends string>(obj: Record<K, string>) {
   return Object.keys(obj) as [K, ...K[]];
+}
+
+function opsi<K extends string>(obj: Record<K, string>): { nilai: K; label: string }[] {
+  return kunci(obj).map((nilai) => ({ nilai, label: obj[nilai] }));
 }

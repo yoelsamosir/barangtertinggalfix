@@ -74,6 +74,48 @@ lib/
    `ajukan_klaim` hanya bisa dipanggil server (anon key publik tidak bisa melewati captcha).
 6. **Storage** — foto bukti di bucket privat, signed URL 5 menit, tidak bisa dihapus setelah tercatat.
 
+## Arsitektur UI
+
+```
+app/(publik)/        halaman pengunjung (header + footer bersama): beranda, detail barang, form klaim
+app/dashboard/       halaman petugas (wajib login)
+app/error.tsx, not-found.tsx, global-error.tsx   halaman gagal / 404
+
+components/
+  ui/       blok dasar tanpa pengetahuan bisnis: tombol, alert, badge, paginasi, skeleton, ...
+  form/     FormHasil (menjalankan Server Action, membagikan Hasil), Field/Input, PesanForm, TombolKirim
+  filter/   filter lewat URL: KolomCari, ChipFilter
+  turnstile/ widget captcha (membaca nonce CSP)
+  barang/   tampilan barang yang dipakai publik & petugas: FotoBarang, IkonKategori
+  publik/   komponen khusus halaman pengunjung
+```
+
+Warna memakai token di `app/globals.css` (palet logo Balai Yanpus), bukan kode warna langsung.
+
+## Di mana menaruh kode baru
+
+| Kebutuhan | Tempat |
+|---|---|
+| Aturan bisnis sebuah aksi (cek akses → validasi → simpan → refresh) | `lib/services/<domain>.ts` |
+| Membaca data untuk halaman / API | `lib/queries/<domain>.ts` |
+| Query tulis ke database | `lib/mutations/<domain>.ts` (dipanggil services saja) |
+| Form UI memanggil aksi | `lib/actions/<domain>.ts` — satu baris ke services |
+| Endpoint REST | `app/api/**/route.ts` — satu baris ke services/queries |
+| Skema validasi input | `lib/validation/<domain>.ts` |
+| Label & daftar pilihan (kategori, status) | `lib/domain.ts` |
+| Path halaman | `lib/routes.ts` (jangan menulis string path di komponen) |
+| Kontak & identitas instansi | `lib/aplikasi.ts` |
+| Komponen dipakai lebih dari satu area | `components/ui` / `components/form` / `components/filter` |
+| Komponen khusus satu area | `components/<area>/` |
+
+Batas lapisan ini **dicek otomatis** oleh ESLint (`eslint.config.ts`): misalnya komponen yang
+mengimpor `lib/mutations` atau `lib/services` langsung akan gagal `npm run lint`.
+
+Aturan kecil:
+- Satu file = satu tugas (satu komponen utama / satu use case per fungsi).
+- Semua operasi mengembalikan `Hasil` (`lib/result.ts`); UI membacanya lewat `FormHasil`.
+- Sebelum commit: `npm run cek` (typecheck + lint + format). Rapikan format dengan `npm run format`.
+
 ## Menjalankan lokal
 
 Butuh Node.js 20+ dan Docker Desktop.
@@ -97,7 +139,9 @@ Supabase Studio lokal: http://127.0.0.1:55323 (port lokal 55xxx karena rentang 5
 | `npm run db:reset` | Bangun ulang database lokal dari migrasi + seed |
 | `npm run db:test` | Tes database (pgTAP) |
 | `npm run db:types` | Generate ulang `lib/supabase/database.types.ts` setelah mengubah skema |
-| `npm run typecheck` / `npm run lint` | Cek TypeScript / ESLint |
+| `npm run typecheck` / `npm run lint` | Cek TypeScript / ESLint (termasuk batas lapisan) |
+| `npm run format` | Rapikan format kode (Prettier + urutan class Tailwind) |
+| `npm run cek` | Typecheck + lint + cek format sekaligus — jalankan sebelum commit |
 | `npm run test:api` | Uji end-to-end REST API (lihat docs/API.md) |
 
 ## Deploy (gratis): Supabase Free + Vercel Hobby

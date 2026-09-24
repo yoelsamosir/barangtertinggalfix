@@ -8,7 +8,10 @@ const TUJUAN = "lib/supabase/database.types.ts";
 
 let hasil;
 try {
-  hasil = execSync("npx supabase gen types typescript --local", { encoding: "utf8", stdio: ["ignore", "pipe", "inherit"] });
+  hasil = execSync("npx supabase gen types typescript --local", {
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "inherit"],
+  });
 } catch {
   console.error("Gagal generate tipe. Pastikan Supabase lokal berjalan (npm run db:start).");
   process.exit(1);

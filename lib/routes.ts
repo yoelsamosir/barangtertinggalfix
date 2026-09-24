@@ -18,6 +18,16 @@ export const ROUTES = {
   profil: "/dashboard/profil",
 } as const;
 
+/** Path + query string; parameter kosong dibuang. */
+export function denganQuery(path: string, params: Record<string, string | number | undefined>): string {
+  const q = new URLSearchParams();
+  for (const [kunci, nilai] of Object.entries(params)) {
+    if (nilai !== undefined && nilai !== "") q.set(kunci, String(nilai));
+  }
+  const s = q.toString();
+  return s ? `${path}?${s}` : path;
+}
+
 export const API = {
   prefix: "/api",
   /** Semua endpoint di bawah prefix ini wajib login petugas. */

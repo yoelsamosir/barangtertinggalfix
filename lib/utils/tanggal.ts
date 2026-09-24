@@ -9,6 +9,11 @@ export function tahunIniWIB(): number {
   return Number(hariIniWIB().slice(0, 4));
 }
 
+/** "2026-09-01" -> "1 September 2026". */
+export function formatTanggal(tanggal: string): string {
+  return new Intl.DateTimeFormat("id-ID", { dateStyle: "long", timeZone: "UTC" }).format(new Date(tanggal));
+}
+
 /** "2026-09-01" -> awal hari tersebut dalam WIB (ISO timestamp). */
 export function awalHariWIB(tanggal: string): string {
   return `${tanggal}T00:00:00+07:00`;

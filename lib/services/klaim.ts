@@ -31,10 +31,7 @@ export async function ajukanKlaim(input: unknown): Promise<Hasil<{ nomor_klaim: 
   if (!hasil.ok) return hasil;
 
   revalidasiDashboard();
-  return ok(
-    { nomor_klaim: hasil.data },
-    "Klaim berhasil diajukan. Silakan menunggu proses verifikasi oleh petugas.",
-  );
+  return ok({ nomor_klaim: hasil.data }, "Klaim berhasil diajukan. Silakan menunggu proses verifikasi oleh petugas.");
 }
 
 /**
