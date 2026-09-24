@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { CLAIM_STATUS } from "@/lib/domain";
-import { normalisasiNoHp } from "@/lib/utils/no-hp";
+import { normalisasiNoHp, POLA_NO_HP } from "@/lib/utils/no-hp";
 import { captchaToken, filterOpsional, kataKunci, tanggalLampau, teksOpsional, teksWajib, uuid } from "./common";
 
 export const ajukanKlaimSchema = z.object({
@@ -10,7 +10,7 @@ export const ajukanKlaimSchema = z.object({
   no_hp: z
     .string({ error: "Nomor HP wajib diisi." })
     .transform(normalisasiNoHp)
-    .pipe(z.string().regex(/^08[0-9]{8,12}$/, "Nomor HP tidak valid. Contoh: 081234567890.")),
+    .pipe(z.string().regex(POLA_NO_HP, "Nomor HP harus 10–13 digit dan diawali 08. Contoh: 081234567890.")),
   waktu_kehilangan: tanggalLampau("Perkiraan waktu kehilangan"),
   lokasi_kehilangan: teksWajib("Lokasi terakhir barang digunakan", 150),
   ciri_barang: teksWajib("Ciri-ciri barang", 1000),

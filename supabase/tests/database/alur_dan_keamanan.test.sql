@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(39);
+select plan(40);
 
 -- ---------------------------------------------------------------------
 -- Data uji (sebagai postgres)
@@ -104,6 +104,11 @@ select throws_ok(
   $$select public.ajukan_klaim('bbbbbbbb-0000-0000-0000-000000000001', 'X', '081222222222',
                                current_date + 5, 'Lobi', 'x', null)$$,
   'P0001', null, 'Waktu kehilangan di masa depan ditolak'
+);
+select throws_ok(
+  $$select public.ajukan_klaim('bbbbbbbb-0000-0000-0000-000000000001', 'X', '08123456789012',
+                               current_date, 'Lobi', 'x', null)$$,
+  '23514', null, 'Nomor HP lebih dari 13 digit ditolak database'
 );
 
 select ok(public.kuota_tersedia('uji:rate', 2, 60), 'Kuota baru masih tersedia');

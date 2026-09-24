@@ -36,8 +36,9 @@ supabase/migrations/
   07_rate_limit       tabel & fungsi pembatas percobaan
   08_akun             cek password lama
   09_perbaikan_keamanan  cek kuota tanpa memakai (anti kunci akun), foto bukti wajib di folder klaimnya
+  10_batas_no_hp       nomor HP klaim maksimal 13 digit
 supabase/seed.sql     data contoh (lokal saja)
-supabase/tests/       tes pgTAP (39 tes alur + keamanan)
+supabase/tests/       tes pgTAP (40 tes alur + keamanan)
 
 app/api/              REST API (lihat docs/API.md)
 lib/

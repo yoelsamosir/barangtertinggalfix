@@ -25,7 +25,7 @@ export function FormKlaim({ itemId }: { itemId: string }) {
             name="no_hp"
             label="Nomor HP (WhatsApp)"
             wajib
-            petunjuk="Petugas akan menghubungi nomor ini. Contoh: 081234567890"
+            petunjuk="Petugas akan menghubungi nomor ini. 10–13 digit, diawali 08. Contoh: 081234567890"
           >
             <Input type="tel" inputMode="tel" autoComplete="tel" maxLength={20} required />
           </Field>
