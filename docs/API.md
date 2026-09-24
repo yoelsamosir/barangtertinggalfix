@@ -160,5 +160,5 @@ Nama field sama dengan body API; token Turnstile dari widget (`cf-turnstile-resp
 npm run db:reset
 npm run build
 npx next start -p 3100
-npm run test:api     # di terminal lain — 59 skenario termasuk percobaan bypass keamanan
+npm run test:api     # di terminal lain — 60 skenario termasuk percobaan bypass keamanan
 ```

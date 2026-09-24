@@ -1,26 +1,46 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/*
+ * Token warna aplikasi, diambil dari logo Balai Yanpus DPAD DIY:
+ * merah (tulisan "Balai Yanpus"), hijau ("DPAD DIY"), emas (lambang DIY),
+ * krem (latar logo). Komponen memakai nama token (bg-brand, text-muted, ...)
+ * sehingga tema cukup diubah di sini.
+ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-latar: #fbf9ec;
+  --color-permukaan: #ffffff;
+  --color-teks: #1f1d16;
+  --color-muted: #5f5a48;
+  --color-garis: #e3dfc4;
+
+  /* Merah logo — identitas & aksi utama */
+  --color-brand: #b11e21;
+  --color-brand-tua: #8e1619;
+  --color-brand-muda: #fbeaea;
+
+  /* Emas lambang DIY — aksen (garis header, badge proses). Teks di atasnya harus gelap. */
+  --color-aksen: #deb731;
+  --color-aksen-muda: #fbf1cf;
+  --color-aksen-tua: #6b5310;
+
+  /* Semantik. Bahaya sewarna brand; dibedakan lewat bentuk (tombol garis + konfirmasi). */
+  --color-bahaya: #b11e21;
+  --color-bahaya-muda: #fbeaea;
+  --color-sukses: #2f6f43;
+  --color-sukses-muda: #e8f2eb;
+  --color-peringatan: #6b5310;
+  --color-peringatan-muda: #fbf1cf;
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  color-scheme: light;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-latar);
+  color: var(--color-teks);
+  font-family: var(--font-sans), system-ui, sans-serif;
 }
