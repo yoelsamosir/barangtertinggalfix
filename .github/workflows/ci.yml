@@ -7,6 +7,8 @@ on:
   push:
     branches: [main]
   pull_request:
+  # Tombol "Run workflow" di tab Actions untuk menjalankan manual.
+  workflow_dispatch:
 
 permissions:
   contents: read
