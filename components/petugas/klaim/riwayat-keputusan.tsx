@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { TautanAksi } from "@/components/ui/tautan-aksi";
 import { ROUTES } from "@/lib/routes";
 import { formatWaktu } from "@/lib/utils/tanggal";
 import type { DetailKlaim } from "./perbandingan-klaim";
@@ -29,12 +29,9 @@ export function RiwayatKeputusan({ klaim }: { klaim: DetailKlaim }) {
         )}
       </dl>
       {klaim.pengembalian && (
-        <Link
-          href={ROUTES.pengembalianDetail(klaim.pengembalian.id)}
-          className="mt-3 inline-block text-sm font-medium text-brand hover:underline"
-        >
+        <TautanAksi href={ROUTES.pengembalianDetail(klaim.pengembalian.id)} className="mt-1">
           Lihat bukti pengembalian
-        </Link>
+        </TautanAksi>
       )}
     </section>
   );

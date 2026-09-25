@@ -8,7 +8,7 @@ export function HeaderPublik() {
   return (
     <header className="border-b-4 border-aksen bg-permukaan">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
-        <Link href={ROUTES.beranda} className="flex min-w-0 items-center gap-3">
+        <Link href={ROUTES.beranda} className="flex min-h-11 min-w-0 items-center gap-3">
           {/* eslint-disable-next-line @next/next/no-img-element -- SVG kecil, tidak perlu dioptimasi */}
           <img src="/logo-balai-yanpus.svg" alt="Balai Yanpus" width={224} height={42} className="h-8 w-auto sm:h-10" />
           <span className="hidden border-l border-garis pl-3 leading-tight sm:block">

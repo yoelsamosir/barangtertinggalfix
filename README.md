@@ -86,7 +86,8 @@ app/error.tsx, not-found.tsx, global-error.tsx   halaman gagal / 404
 components/
   ui/       blok dasar tanpa pengetahuan bisnis: tombol, alert, badge, paginasi, skeleton,
             KepalaHalaman, KartuStatistik, TabelData (tabel desktop / kartu HP), DialogKonfirmasi, PesanInfo,
-            GrafikBatang (HTML/CSS tanpa library; warna seri --color-seri-* sudah diuji buta warna)
+            GrafikBatang (HTML/CSS tanpa library; warna seri --color-seri-* sudah diuji buta warna),
+            TautanAksi & TautanKembali (area sentuh min. 40px)
   form/     FormHasil (menjalankan Server Action, membagikan Hasil), Field/Input, PesanForm, TombolKirim,
             InputPassword, InputFoto (foto dikecilkan di browser: lib/browser/kecilkan-foto.ts), Centang,
             AmbilFotoKamera (getUserMedia + cadangan <input capture>; kamera dimatikan setelah jepret)

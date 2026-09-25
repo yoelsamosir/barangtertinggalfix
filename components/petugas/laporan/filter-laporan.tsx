@@ -1,6 +1,6 @@
 import Form from "next/form";
-import Link from "next/link";
 import { Tombol } from "@/components/ui/tombol";
+import { TautanAksi } from "@/components/ui/tautan-aksi";
 import { OPSI_KATEGORI } from "@/lib/domain";
 import { ROUTES } from "@/lib/routes";
 import { hariIniWIB } from "@/lib/utils/tanggal";
@@ -54,11 +54,7 @@ export function FilterLaporanPetugas({ filter, tahun }: { filter: FilterLaporan;
         <Tombol type="submit" varian="kedua">
           Terapkan
         </Tombol>
-        {adaFilter && (
-          <Link href={ROUTES.laporan} className="text-sm font-medium whitespace-nowrap text-brand hover:underline">
-            Hapus filter
-          </Link>
-        )}
+        {adaFilter && <TautanAksi href={ROUTES.laporan}>Hapus filter</TautanAksi>}
       </div>
     </Form>
   );

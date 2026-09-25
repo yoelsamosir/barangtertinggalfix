@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { FotoBarang } from "@/components/barang/foto-barang";
+import { TautanAksi } from "@/components/ui/tautan-aksi";
 import { KATEGORI_LABEL } from "@/lib/domain";
 import { ROUTES } from "@/lib/routes";
 import { BadgeStatusBarang } from "../barang/badge-status-barang";
@@ -24,12 +24,9 @@ export function PanelBarangKlaim({ barang }: { barang: DetailKlaim["barang"] }) 
         <p className="text-muted">{KATEGORI_LABEL[barang.kategori]}</p>
         <BadgeStatusBarang status={barang.status} />
       </div>
-      <Link
-        href={ROUTES.barangDetail(barang.id)}
-        className="mt-3 inline-block text-sm font-medium text-brand hover:underline"
-      >
+      <TautanAksi href={ROUTES.barangDetail(barang.id)} className="mt-1">
         Lihat detail barang
-      </Link>
+      </TautanAksi>
     </section>
   );
 }

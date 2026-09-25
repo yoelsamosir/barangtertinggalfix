@@ -39,7 +39,7 @@ function Chip({ aktif, href, children }: { aktif: boolean; href: string; childre
       <Link
         href={href}
         aria-current={aktif ? "page" : undefined}
-        className={`inline-flex min-h-9 items-center rounded-full border px-4 text-sm font-medium transition-colors ${
+        className={`inline-flex min-h-10 items-center rounded-full border px-4 text-sm font-medium transition-colors ${
           aktif ? "border-brand bg-brand text-white" : "border-garis bg-permukaan hover:border-brand hover:text-brand"
         }`}
       >

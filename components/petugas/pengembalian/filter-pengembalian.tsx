@@ -1,6 +1,6 @@
 import Form from "next/form";
-import Link from "next/link";
 import { Tombol } from "@/components/ui/tombol";
+import { TautanAksi } from "@/components/ui/tautan-aksi";
 import { ROUTES } from "@/lib/routes";
 import { hariIniWIB } from "@/lib/utils/tanggal";
 import type { FilterPengembalian } from "@/lib/validation/pengembalian";
@@ -25,11 +25,7 @@ export function FilterPengembalianPetugas({ filter }: { filter: FilterPengembali
       <Tombol type="submit" varian="kedua">
         Terapkan
       </Tombol>
-      {(filter.dari || filter.sampai) && (
-        <Link href={ROUTES.pengembalian} className="py-2 text-sm font-medium text-brand hover:underline">
-          Hapus filter
-        </Link>
-      )}
+      {(filter.dari || filter.sampai) && <TautanAksi href={ROUTES.pengembalian}>Hapus filter</TautanAksi>}
     </Form>
   );
 }

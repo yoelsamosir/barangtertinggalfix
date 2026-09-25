@@ -1,10 +1,10 @@
 import { SearchX } from "lucide-react";
-import Link from "next/link";
 import { ChipFilter } from "@/components/filter/chip-filter";
 import { KolomCari } from "@/components/filter/kolom-cari";
 import { KartuBarang } from "@/components/publik/kartu-barang";
 import { ProsedurKlaim } from "@/components/publik/prosedur-klaim";
 import { Paginasi } from "@/components/ui/paginasi";
+import { TautanAksi } from "@/components/ui/tautan-aksi";
 import { APLIKASI } from "@/lib/aplikasi";
 import { KATEGORI_LABEL, OPSI_KATEGORI } from "@/lib/domain";
 import { parseHalaman } from "@/lib/pagination";
@@ -92,9 +92,9 @@ function HasilKosong({ adaFilter }: { adaFilter: boolean }) {
           : "Saat ini tidak ada barang tertinggal yang tercatat."}
       </p>
       {adaFilter && (
-        <Link href={ROUTES.beranda} className="mt-4 inline-block text-sm font-medium text-brand hover:underline">
+        <TautanAksi href={ROUTES.beranda} className="mt-2">
           Tampilkan semua barang
-        </Link>
+        </TautanAksi>
       )}
     </div>
   );

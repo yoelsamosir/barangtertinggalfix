@@ -1,5 +1,6 @@
 import { CircleCheck } from "lucide-react";
 import Link from "next/link";
+import { TautanAksi } from "@/components/ui/tautan-aksi";
 import type { klaimMenungguTerbaru } from "@/lib/queries/dashboard";
 import { denganQuery, ROUTES } from "@/lib/routes";
 import { formatWaktu } from "@/lib/utils/tanggal";
@@ -14,12 +15,9 @@ export function KlaimMenunggu({ klaim }: { klaim: Klaim[] }) {
         <h2 id="judul-klaim-menunggu" className="font-semibold">
           Klaim terbaru menunggu verifikasi
         </h2>
-        <Link
-          href={denganQuery(ROUTES.klaim, { status: "menunggu" })}
-          className="shrink-0 text-sm font-medium text-brand hover:underline"
-        >
+        <TautanAksi href={denganQuery(ROUTES.klaim, { status: "menunggu" })} className="shrink-0">
           Lihat semua
-        </Link>
+        </TautanAksi>
       </div>
 
       {klaim.length === 0 ? (
