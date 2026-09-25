@@ -1,0 +1,84 @@
+# Pemeriksaan otomatis setiap push ke main dan setiap pull request.
+#   cek   : typecheck + lint (termasuk batas lapisan) + format + build
+#   uji   : Supabase lokal -> 40 tes database (pgTAP) -> 62 uji end-to-end REST API
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+# Push baru ke branch yang sama membatalkan run lama yang belum selesai.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cek:
+    name: Typecheck, lint, format & build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # Nilai tiruan: build hanya butuh variabel ini ada, tidak menghubungi Supabase.
+      NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: kunci-tiruan-untuk-build
+      NEXT_PUBLIC_TURNSTILE_SITE_KEY: 1x00000000000000000000AA
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run cek
+      - run: npm run build
+
+  uji:
+    name: Tes database & uji API
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+
+      # Hanya layanan yang dipakai aplikasi (db, auth, rest, storage, gateway) agar lebih cepat.
+      - name: Jalankan Supabase lokal
+        run: npx supabase start -x realtime,imgproxy,mailpit,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
+
+      - name: Tes database (pgTAP)
+        run: npm run db:test
+
+      # Kunci Supabase diambil dari instance lokal; Turnstile memakai kunci UJI resmi Cloudflare.
+      - name: Siapkan .env.local
+        run: |
+          npx supabase status -o env > supabase.env
+          set -a; . ./supabase.env; set +a
+          {
+            echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL"
+            echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY"
+            echo "NEXT_PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA"
+            echo "APP_URL=http://localhost:3000"
+            echo "SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY"
+            echo "TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA"
+            echo "IP_HASH_SECRET=$(openssl rand -hex 32)"
+          } > .env.local
+          rm supabase.env
+
+      - run: npm run build
+
+      - name: Jalankan server & uji API
+        run: |
+          npx next start -p 3100 > server.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf -o /dev/null http://127.0.0.1:3100/ && break; sleep 1; done
+          npm run test:api
+
+      - name: Log server (bila gagal)
+        if: failure()
+        run: cat server.log || true

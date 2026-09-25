@@ -1,4 +1,4 @@
-// Uji end-to-end REST API (60 skenario) terhadap server LOKAL.
+// Uji end-to-end REST API (62 skenario) terhadap server LOKAL.
 //
 // Persiapan:  npm run db:reset && npm run build && npx next start -p 3100
 // Jalankan :  npm run test:api
@@ -124,6 +124,10 @@ cek(
 
 const lintas = await req("POST", "/api/klaim", { json: klaimBody, headers: { origin: "https://situs-jahat.com" } });
 cek("POST lintas situs (CSRF) -> 403", lintas.status === 403, lintas);
+const mirip = await req("POST", "/api/klaim", { json: {}, headers: { origin: "http://localhost:3000.jahat.com" } });
+cek("POST dari origin tiruan mirip APP_URL -> 403", mirip.status === 403, mirip.status);
+const resmi = await req("POST", "/api/klaim", { json: {}, headers: { origin: wajibEnv("APP_URL") } });
+cek("POST dari origin resmi (APP_URL) diterima -> bukan 403", resmi.status !== 403, resmi.status);
 
 const klaim = await req("POST", "/api/klaim", { json: { ...klaimBody, captcha_token: CAPTCHA_UJI }, ip: "10.1.0.2" });
 cek(

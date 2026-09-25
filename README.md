@@ -183,9 +183,14 @@ Supabase Studio lokal: http://127.0.0.1:55323 (port lokal 55xxx karena rentang 5
    | `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Project Settings → API |
    | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | anon / publishable key |
    | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | site key Cloudflare |
+   | `APP_URL` | alamat resmi aplikasi, mis. `https://barang-tertinggal.vercel.app` (proteksi CSRF API; tanpa ini, POST ke /api dari browser ditolak) |
    | `SUPABASE_SERVICE_ROLE_KEY` | service_role / secret key — **rahasia** |
    | `TURNSTILE_SECRET_KEY` | secret key Cloudflare — **rahasia** |
    | `IP_HASH_SECRET` | 64 karakter acak — **rahasia** |
+
+**Syarat hosting.** Aplikasi ini dirancang untuk **Vercel**: IP pengunjung untuk rate limit dibaca dari
+`x-forwarded-for` yang ditulis ulang oleh Vercel (`lib/security/ip-klien.ts`). Bila dipindah ke hosting lain,
+pastikan ada proxy tepercaya yang menimpa header itu. Bila tidak, rate limit bisa diakali dengan header palsu.
 
 Catatan paket gratis Supabase: project di-*pause* setelah 7 hari tanpa aktivitas
 (bisa diaktifkan kembali dari dashboard, data tetap aman).

@@ -7,7 +7,9 @@ const HEADER_KEAMANAN = [
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   // Kamera hanya untuk situs ini (foto serah terima); fitur lain dimatikan.
   { key: "Permissions-Policy", value: "camera=(self), microphone=(), geolocation=(), payment=()" },
-  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
+  // Tanpa includeSubDomains: aplikasi bisa dipasang di domain instansi yang subdomain
+  // lainnya tidak kita kendalikan (belum tentu semuanya HTTPS).
+  { key: "Strict-Transport-Security", value: "max-age=63072000" },
 ];
 
 const nextConfig: NextConfig = {
