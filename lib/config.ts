@@ -26,3 +26,10 @@ export const MAKS_BODY_REQUEST = 4.5 * 1024 * 1024;
 
 /** Masa berlaku signed URL foto bukti serah terima. */
 export const SIGNED_URL_TTL_DETIK = 60 * 5;
+
+/**
+ * Masa berlaku token akses Supabase (menit). Setelah password diganti, perangkat lain
+ * baru benar-benar keluar saat tokennya kedaluwarsa. HARUS sama dengan jwt_expiry
+ * di supabase/config.toml (lokal) dan pengaturan JWT expiry di Supabase online.
+ */
+export const MASA_TOKEN_MENIT = 10;

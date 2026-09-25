@@ -171,6 +171,11 @@ Supabase Studio lokal: http://127.0.0.1:55323 (port lokal 55xxx karena rentang 5
      Nama diatur lewat User Metadata `{"nama": "Siti"}` atau di tabel `profiles`.
      Nonaktifkan petugas: ubah `profiles.status` menjadi `nonaktif`.
    - **Authentication → URL Configuration**: *Site URL* = domain Vercel.
+   - **Masa berlaku token akses (JWT expiry) = `600` detik (10 menit)**, sama dengan
+     `jwt_expiry` di `supabase/config.toml` dan `MASA_TOKEN_MENIT` di `lib/config.ts`.
+     Letaknya di pengaturan JWT / Sessions pada dashboard (nama menu bisa berbeda antarversi dashboard).
+     Pengaturan ini **tidak** ikut terkirim oleh `db push`. Tanpa ini, setelah password diganti,
+     perangkat lain tetap bisa masuk sampai 1 jam (bawaan Supabase).
 4. Vercel → import repo → Environment Variables:
 
    | Nama | Nilai |
