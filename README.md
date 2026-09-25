@@ -157,40 +157,14 @@ Supabase Studio lokal: http://127.0.0.1:55323 (port lokal 55xxx karena rentang 5
 
 ## Deploy (gratis): Supabase Free + Vercel Hobby
 
-1. Buat project di https://supabase.com (region Singapore), lalu push skema:
-   ```bash
-   npx supabase login
-   npx supabase link --project-ref <ref-project>
-   npx supabase db push
-   ```
-2. Buat Turnstile widget di https://dash.cloudflare.com → Turnstile (gratis) → dapat **site key** & **secret key**.
-3. Supabase Dashboard:
-   - **Authentication → Sign In / Providers**: matikan *Allow new users to sign up*.
-   - **Authentication → Attack Protection**: aktifkan *Captcha* → Turnstile → isi **secret key**.
-   - **Authentication → Users → Add user** (centang *Auto Confirm*) untuk setiap petugas.
-     Nama diatur lewat User Metadata `{"nama": "Siti"}` atau di tabel `profiles`.
-     Nonaktifkan petugas: ubah `profiles.status` menjadi `nonaktif`.
-   - **Authentication → URL Configuration**: *Site URL* = domain Vercel.
-   - **Masa berlaku token akses (JWT expiry) = `600` detik (10 menit)**, sama dengan
-     `jwt_expiry` di `supabase/config.toml` dan `MASA_TOKEN_MENIT` di `lib/config.ts`.
-     Letaknya di pengaturan JWT / Sessions pada dashboard (nama menu bisa berbeda antarversi dashboard).
-     Pengaturan ini **tidak** ikut terkirim oleh `db push`. Tanpa ini, setelah password diganti,
-     perangkat lain tetap bisa masuk sampai 1 jam (bawaan Supabase).
-4. Vercel → import repo → Environment Variables:
+**Panduan lengkap langkah demi langkah: [docs/DEPLOY.md](docs/DEPLOY.md)** — membuat project Supabase,
+mengirim migrasi, widget Cloudflare Turnstile, import ke Vercel beserta 7 environment variable,
+akun petugas, pemeriksaan setelah deploy, pembaruan, cadangan data, dan pemecahan masalah.
 
-   | Nama | Nilai |
-   |---|---|
-   | `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Project Settings → API |
-   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | anon / publishable key |
-   | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | site key Cloudflare |
-   | `APP_URL` | alamat resmi aplikasi, mis. `https://barang-tertinggal.vercel.app` (proteksi CSRF API; tanpa ini, POST ke /api dari browser ditolak) |
-   | `SUPABASE_SERVICE_ROLE_KEY` | service_role / secret key — **rahasia** |
-   | `TURNSTILE_SECRET_KEY` | secret key Cloudflare — **rahasia** |
-   | `IP_HASH_SECRET` | 64 karakter acak — **rahasia** |
+Ringkasnya: `npx supabase db push` (tanpa seed) → atur Authentication di dashboard Supabase
+(pendaftaran ditutup, captcha Turnstile, JWT expiry 600 detik, Site URL) → import repo ke Vercel
+dengan environment variable dari `.env.example` + `APP_URL` → region fungsi Singapore.
 
 **Syarat hosting.** Aplikasi ini dirancang untuk **Vercel**: IP pengunjung untuk rate limit dibaca dari
 `x-forwarded-for` yang ditulis ulang oleh Vercel (`lib/security/ip-klien.ts`). Bila dipindah ke hosting lain,
 pastikan ada proxy tepercaya yang menimpa header itu. Bila tidak, rate limit bisa diakali dengan header palsu.
-
-Catatan paket gratis Supabase: project di-*pause* setelah 7 hari tanpa aktivitas
-(bisa diaktifkan kembali dari dashboard, data tetap aman).
