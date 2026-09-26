@@ -36,7 +36,7 @@ export function BagianFotoBukti() {
 
       <Field name="foto" label="Foto bukti serah terima" wajib petunjuk="Foto pengunjung bersama barang yang diterima.">
         {setuju ? (
-          <AmbilFotoKamera />
+          <AmbilFotoKamera namaFile="bukti-serah-terima.jpg" />
         ) : (
           <p className="flex aspect-[4/3] w-full max-w-md items-center justify-center rounded-lg border border-dashed border-garis bg-latar p-4 text-center text-sm text-muted">
             Kamera akan menyala setelah persetujuan pengunjung dicentang.

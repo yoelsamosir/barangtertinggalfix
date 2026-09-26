@@ -23,7 +23,13 @@ type Hadap = "environment" | "user";
 const tanpaLangganan = () => () => {};
 const kameraDidukung = () => Boolean(navigator.mediaDevices?.getUserMedia);
 
-export function AmbilFotoKamera() {
+type Props = {
+  /** Nama file hasil jepretan yang terkirim bersama form. */
+  namaFile?: string;
+  onPilih?: (adaFoto: boolean) => void;
+};
+
+export function AmbilFotoKamera({ namaFile = "foto.jpg", onPilih }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -66,12 +72,13 @@ export function AmbilFotoKamera() {
   function pakaiFoto(file: File) {
     if (inputRef.current) isiInputFile(inputRef.current, file);
     setPratinjau(URL.createObjectURL(file));
+    onPilih?.(true);
   }
 
   async function jepret() {
     const video = videoRef.current;
     if (!video?.videoWidth) return;
-    const file = await gambarKeJpeg(video, video.videoWidth, video.videoHeight, "bukti-serah-terima.jpg");
+    const file = await gambarKeJpeg(video, video.videoWidth, video.videoHeight, namaFile);
     if (file) pakaiFoto(file);
   }
 
@@ -84,6 +91,7 @@ export function AmbilFotoKamera() {
     if (inputRef.current) isiInputFile(inputRef.current, null);
     setKamera("memulai");
     setPratinjau(null);
+    onPilih?.(false);
   }
 
   function gantiKamera() {
