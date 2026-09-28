@@ -140,6 +140,20 @@ Aturan alur (dijaga database):
 | `GET` | `/api/petugas/laporan?dari=&sampai=&kategori=&lokasi=` | Ringkasan barang yang **ditemukan** pada periode itu + status klaimnya |
 | `GET` | `/api/petugas/laporan/per-bulan?tahun=&kategori=` | 12 baris `{ bulan, ditemukan, dikembalikan }` untuk grafik |
 
+### Kelola petugas (khusus admin)
+Petugas biasa mendapat `403` (`jenis: "akses"`). Aturan juga dijaga database (`is_admin()`).
+
+| Method | Path | Keterangan |
+|---|---|---|
+| `GET` | `/api/petugas/pengguna` | Semua akun: `{ id, nama, email, peran, status, created_at, terakhir_login }` |
+| `POST` | `/api/petugas/pengguna` | `{ "nama", "email", "password", "peran"? }` → 201 `{ id }`. Akun langsung aktif. Email terdaftar → 409 |
+| `POST` | `/api/petugas/pengguna/:id/status` | `{ "status": "aktif" \| "nonaktif" }` |
+| `POST` | `/api/petugas/pengguna/:id/peran` | `{ "peran": "petugas" \| "admin" }` |
+| `POST` | `/api/petugas/pengguna/:id/password` | `{ "password_baru", "konfirmasi_password" }`: reset password petugas yang lupa |
+
+Admin tidak dapat mengubah status, peran, atau mereset password **akunnya sendiri** lewat endpoint ini
+(sehingga selalu tersisa minimal satu admin aktif). Password sendiri diganti lewat `/api/petugas/akun/password`.
+
 ---
 
 ## Server Action (untuk form UI nanti)
@@ -154,6 +168,7 @@ Nama field sama dengan body API; token Turnstile dari widget (`cf-turnstile-resp
 | `tambahBarang`, `ubahBarang`, `hapusBarang` | `lib/actions/barang.ts` |
 | `ajukanKlaim`, `verifikasiKlaim` | `lib/actions/klaim.ts` |
 | `serahTerima` | `lib/actions/pengembalian.ts` |
+| `tambahPetugas`, `ubahStatusPetugas`, `aturPeranPetugas`, `resetPasswordPetugas` | `lib/actions/petugas.ts` |
 
 ## Menguji
 

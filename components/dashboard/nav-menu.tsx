@@ -7,14 +7,16 @@ import { MENU_DASHBOARD, menuAktif } from "./menu";
 /**
  * Daftar menu petugas; menu halaman yang sedang dibuka ditandai.
  * `lencana` = angka kecil di samping menu (kunci: href menu), mis. jumlah klaim menunggu.
+ * `admin` = tampilkan juga menu khusus admin. (Hanya tampilan; halamannya sendiri memeriksa peran.)
  */
-export function NavMenu({ lencana = {} }: { lencana?: Record<string, number> }) {
+export function NavMenu({ lencana = {}, admin = false }: { lencana?: Record<string, number>; admin?: boolean }) {
   const pathname = usePathname();
+  const menu = MENU_DASHBOARD.filter((m) => admin || !m.hanyaAdmin);
 
   return (
     <nav aria-label="Menu petugas">
       <ul className="space-y-1">
-        {MENU_DASHBOARD.map(({ label, href, ikon: Ikon }) => {
+        {menu.map(({ label, href, ikon: Ikon }) => {
           const aktif = menuAktif(href, pathname);
           const angka = lencana[href] ?? 0;
           return (

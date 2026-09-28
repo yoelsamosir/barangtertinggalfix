@@ -185,18 +185,21 @@ export type Database = {
           created_at: string
           id: string
           nama: string
+          peran: string
           status: string
         }
         Insert: {
           created_at?: string
           id: string
           nama: string
+          peran?: string
           status?: string
         }
         Update: {
           created_at?: string
           id?: string
           nama?: string
+          peran?: string
           status?: string
         }
         Relationships: []
@@ -294,6 +297,10 @@ export type Database = {
         }
         Returns: string
       }
+      atur_peran_petugas: {
+        Args: { p_id: string; p_peran: string }
+        Returns: undefined
+      }
       barang_publik_detail: {
         Args: { p_id: string }
         Returns: {
@@ -328,6 +335,19 @@ export type Database = {
         }[]
       }
       cek_password_sendiri: { Args: { p_password: string }; Returns: boolean }
+      daftar_petugas: {
+        Args: never
+        Returns: {
+          created_at: string
+          email: string
+          id: string
+          nama: string
+          peran: string
+          status: string
+          terakhir_login: string
+        }[]
+      }
+      is_admin: { Args: never; Returns: boolean }
       is_petugas: { Args: never; Returns: boolean }
       kuota_tersedia: {
         Args: { p_jendela_detik: number; p_kunci: string; p_maks: number }
@@ -384,6 +404,10 @@ export type Database = {
           barang_tersimpan: number
           klaim_menunggu: number
         }[]
+      }
+      ubah_status_petugas: {
+        Args: { p_id: string; p_status: string }
+        Returns: undefined
       }
       verifikasi_klaim: {
         Args: { p_catatan?: string; p_claim_id: string; p_setujui: boolean }
@@ -547,4 +571,3 @@ export const Constants = {
     },
   },
 } as const
-

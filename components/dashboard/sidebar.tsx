@@ -1,5 +1,6 @@
 import Link from "next/link";
-import type { Petugas } from "@/lib/auth";
+import { Badge } from "@/components/ui/badge";
+import { isAdmin, type Petugas } from "@/lib/auth";
 import { ROUTES } from "@/lib/routes";
 import { NavMenu } from "./nav-menu";
 import { TombolLogout } from "./tombol-logout";
@@ -15,12 +16,15 @@ export function Sidebar({ petugas, lencana }: { petugas: Petugas; lencana?: Reco
       </Link>
 
       <div className="flex-1">
-        <NavMenu lencana={lencana} />
+        <NavMenu lencana={lencana} admin={isAdmin(petugas)} />
       </div>
 
       <div className="space-y-2 border-t border-garis pt-4">
         <div className="px-3">
-          <p className="truncate text-sm font-semibold">{petugas.nama}</p>
+          <p className="flex items-center gap-2 text-sm font-semibold">
+            <span className="truncate">{petugas.nama}</span>
+            {isAdmin(petugas) && <Badge warna="brand">Admin</Badge>}
+          </p>
           {petugas.email && <p className="truncate text-xs text-muted">{petugas.email}</p>}
         </div>
         <TombolLogout />

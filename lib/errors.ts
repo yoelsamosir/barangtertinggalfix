@@ -57,3 +57,11 @@ export class TidakBerwenangError extends Error {
     this.name = "TidakBerwenangError";
   }
 }
+
+/** Dilempar bila petugas login tetapi bukan admin. API -> 403. */
+export class AksesDitolakError extends Error {
+  constructor() {
+    super("Hanya admin yang dapat mengelola petugas.");
+    this.name = "AksesDitolakError";
+  }
+}

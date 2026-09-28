@@ -1,5 +1,5 @@
 import "server-only";
-import { TidakBerwenangError } from "@/lib/errors";
+import { AksesDitolakError, TidakBerwenangError } from "@/lib/errors";
 import { gagal, ok, type Hasil, type JenisGagal } from "@/lib/result";
 
 /**
@@ -42,6 +42,9 @@ export async function tangani(handler: () => Promise<Response>): Promise<Respons
   } catch (error) {
     if (error instanceof TidakBerwenangError) {
       return respon(gagal("tidak_login", error.message));
+    }
+    if (error instanceof AksesDitolakError) {
+      return respon(gagal("akses", error.message));
     }
     console.error("[api]", error);
     return respon(gagal("server", "Terjadi kesalahan pada server."));

@@ -10,6 +10,7 @@ import type { Supabase } from "./types";
  * memang khusus server dan sudah dijaga aplikasi:
  *   - ajukan_klaim (setelah Turnstile & rate limit)  -> lib/mutations/klaim.ts
  *   - pakai_kuota  (rate limit)                        -> lib/security/rate-limit.ts
+ *   - Auth Admin API: tambah petugas & reset password  -> lib/services/petugas.ts (setelah cek admin)
  * Jangan dipakai untuk membaca/menulis data petugas.
  */
 export function createAdminClient(): Supabase {

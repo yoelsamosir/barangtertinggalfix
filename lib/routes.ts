@@ -17,6 +17,7 @@ export const ROUTES = {
   pengembalianDetail: (id: string) => `/dashboard/pengembalian/${id}`,
   laporan: "/dashboard/laporan",
   profil: "/dashboard/profil",
+  kelolaPetugas: "/dashboard/petugas",
 } as const;
 
 /** Path + query string; parameter kosong dibuang. */

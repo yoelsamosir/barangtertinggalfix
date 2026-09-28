@@ -37,21 +37,23 @@ supabase/migrations/
   08_akun             cek password lama
   09_perbaikan_keamanan  cek kuota tanpa memakai (anti kunci akun), foto bukti wajib di folder klaimnya
   10_batas_no_hp       nomor HP klaim maksimal 13 digit
+  11_peran_admin       peran petugas/admin, is_admin, daftar/ubah status/atur peran petugas (khusus admin)
 supabase/seed.sql     data contoh (lokal saja)
 supabase/tests/       tes pgTAP (40 tes alur + keamanan)
 
 app/api/              REST API (lihat docs/API.md)
 lib/
-  services/     use case: auth, akun, barang, klaim, pengembalian
-  queries/      baca data: publik, barang, klaim, pengembalian, dashboard, laporan
-  mutations/    tulis database: barang, klaim, pengembalian, akun
+  services/     use case: auth, akun, barang, klaim, pengembalian, petugas (kelola akun, khusus admin)
+  queries/      baca data: publik, barang, klaim, pengembalian, dashboard, laporan, petugas
+  mutations/    tulis database: barang, klaim, pengembalian, akun, petugas
   actions/      Server Action untuk form UI (+ jalankan.ts: sesi habis -> /login)
   api/          helper REST: baca body/query, tulis response & status HTTP
   security/     rate-limit, turnstile, csp, origin, ip-klien
   storage/      foto-barang (publik), bukti-serah-terima (privat), validasi-foto
   validation/   skema zod per domain
   supabase/     klien browser/server/admin, sesi proxy, filter, tipe hasil generate
-  auth.ts       identitas petugas: getPetugas, pastikanPetugas (lempar), requirePetugas (redirect)
+  auth.ts       identitas petugas: getPetugas, pastikanPetugas (lempar), requirePetugas (redirect),
+                pastikanAdmin / requireAdmin untuk halaman & data khusus admin
   result.ts     bentuk hasil semua operasi { ok, data } | { ok:false, jenis, error }
   errors.ts     error database -> pesan & jenis
   env-server.ts variabel rahasia (divalidasi)
@@ -62,9 +64,12 @@ lib/
 | Peran | Masuk lewat | Akses |
 |---|---|---|
 | Pengunjung | tanpa login | cari & lihat barang (kolom aman), ajukan klaim |
-| Petugas aktif | email + password + captcha | semua fitur petugas, setara satu sama lain |
+| Petugas aktif | email + password + captcha | semua fitur barang, klaim, pengembalian, laporan |
+| Admin | sama dengan petugas | fitur petugas + menu **Kelola Petugas**: tambah akun, nonaktifkan/aktifkan, atur peran, reset password |
 | Petugas nonaktif | — | ditolak saat login; sesi lama langsung tidak bisa membaca data |
-| Pengelola akun | Dashboard Supabase | buat / nonaktifkan / reset password petugas |
+
+Admin pertama = akun paling awal saat migrasi 11 dijalankan. Admin tidak bisa menonaktifkan atau menurunkan
+perannya sendiri, jadi selalu ada minimal satu admin aktif. Dashboard Supabase tetap bisa dipakai sebagai cadangan.
 
 ### Lapisan keamanan
 1. **proxy.ts** — CSP ber-nonce, tolak request lintas situs ke `/api`, 401/redirect bila belum login.
