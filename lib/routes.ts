@@ -69,4 +69,5 @@ export const API = {
   /** Semua endpoint di bawah prefix ini wajib login petugas. */
   petugas: "/api/petugas",
   unduhLaporan: "/api/petugas/laporan/unduh",
+  klaimMenunggu: "/api/petugas/klaim/menunggu",
 } as const;

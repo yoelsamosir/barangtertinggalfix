@@ -2,7 +2,7 @@ import "server-only";
 import { pastikanPetugas } from "@/lib/auth";
 import { gagalMemuat } from "@/lib/errors";
 import { createClient } from "@/lib/supabase/server";
-import { KOLOM_KLAIM_RINGKAS } from "./klaim";
+import { jumlahKlaimMenunggu, KOLOM_KLAIM_RINGKAS } from "./klaim";
 
 /** Ringkasan untuk halaman utama dashboard petugas. */
 
@@ -31,3 +31,11 @@ export async function klaimMenungguTerbaru(jumlah = 5) {
 
   return data;
 }
+
+/** Untuk notifikasi klaim baru di halaman petugas: jumlah menunggu + satu klaim paling baru. */
+export async function ringkasanKlaimMenunggu() {
+  const [jumlah, terbaru] = await Promise.all([jumlahKlaimMenunggu(), klaimMenungguTerbaru(1)]);
+  return { jumlah, terbaru: terbaru[0] ?? null };
+}
+
+export type RingkasanKlaimMenunggu = Awaited<ReturnType<typeof ringkasanKlaimMenunggu>>;

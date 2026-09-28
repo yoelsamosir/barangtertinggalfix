@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { LoncengKlaim } from "@/components/dashboard/lonceng-klaim";
 import { MenuMobile } from "@/components/dashboard/menu-mobile";
+import { NotifKlaim } from "@/components/dashboard/notif-klaim";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { APLIKASI } from "@/lib/aplikasi";
 import { requirePetugas } from "@/lib/auth";
@@ -18,7 +20,8 @@ export const metadata: Metadata = {
  */
 export default async function LayoutDashboard({ children }: LayoutProps<"/dashboard">) {
   const petugas = await requirePetugas();
-  const lencana = { [ROUTES.klaim]: await jumlahKlaimMenunggu() };
+  const klaimMenunggu = await jumlahKlaimMenunggu();
+  const lencana = { [ROUTES.klaim]: klaimMenunggu };
 
   return (
     <div className="flex flex-1">
@@ -27,11 +30,13 @@ export default async function LayoutDashboard({ children }: LayoutProps<"/dashbo
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <MenuMobile judul={APLIKASI.nama}>
+        <MenuMobile judul={APLIKASI.nama} kanan={<LoncengKlaim jumlah={klaimMenunggu} />}>
           <Sidebar petugas={petugas} lencana={lencana} />
         </MenuMobile>
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 lg:py-8 print:p-0">{children}</main>
       </div>
+
+      <NotifKlaim jumlahAwal={klaimMenunggu} />
     </div>
   );
 }

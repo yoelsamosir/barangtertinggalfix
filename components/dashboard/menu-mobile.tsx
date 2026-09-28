@@ -6,10 +6,11 @@ import { useEffect, useState, type ReactNode } from "react";
 
 /**
  * Bilah atas di HP + laci navigasi yang bisa dibuka/tutup.
+ * `kanan` = isi di ujung kanan bilah atas (mis. lonceng klaim).
  * Isi laci (children) sama dengan sidebar desktop. Laci tertutup sendiri
  * setelah berpindah halaman atau menekan Escape.
  */
-export function MenuMobile({ judul, children }: { judul: string; children: ReactNode }) {
+export function MenuMobile({ judul, kanan, children }: { judul: string; kanan?: ReactNode; children: ReactNode }) {
   const [terbuka, setTerbuka] = useState(false);
   const pathname = usePathname();
 
@@ -40,7 +41,8 @@ export function MenuMobile({ judul, children }: { judul: string; children: React
         >
           <Menu aria-hidden className="size-6" />
         </button>
-        <span className="font-semibold">{judul}</span>
+        <span className="truncate font-semibold">{judul}</span>
+        {kanan}
       </header>
 
       {terbuka && (

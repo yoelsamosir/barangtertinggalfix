@@ -118,6 +118,7 @@ Kode barang dan status **tidak bisa diisi** — dibuat & dikelola sistem.
 | Method | Path | Keterangan |
 |---|---|---|
 | `GET` | `/api/petugas/klaim?status=&cari=&halaman=` | `status`: `menunggu|disetujui|ditolak|selesai`. `cari`: nomor klaim / nama |
+| `GET` | `/api/petugas/klaim/menunggu` | `{ jumlah, terbaru }`: jumlah klaim `menunggu` + satu klaim paling baru (atau `null`). Dipantau halaman petugas tiap 30 detik untuk notifikasi klaim baru |
 | `GET` | `/api/petugas/klaim/:id` | Klaim + data barang **lengkap** untuk dicocokkan |
 | `POST` | `/api/petugas/klaim/:id/verifikasi` | `{ "keputusan": "setujui" \| "tolak", "catatan" }` — catatan wajib bila tolak |
 | `POST` | `/api/petugas/klaim/:id/serah-terima` | multipart: `foto`*, `persetujuan_foto`* (`"on"`), `catatan` → 201 `{ return_id }` |

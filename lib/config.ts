@@ -33,3 +33,6 @@ export const SIGNED_URL_TTL_DETIK = 60 * 5;
  * di supabase/config.toml (lokal) dan pengaturan JWT expiry di Supabase online.
  */
 export const MASA_TOKEN_MENIT = 10;
+
+/** Seberapa sering halaman petugas memeriksa klaim baru (hanya saat tab sedang dilihat). */
+export const INTERVAL_CEK_KLAIM_DETIK = 30;
